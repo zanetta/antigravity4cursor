@@ -1,0 +1,17 @@
+{
+    "name": "antigravity4cursor-monorepo",
+    "private": true,
+    "description": "AG Kit port for Cursor IDE — monorepo root",
+    "workspaces": [
+        "cli"
+    ],
+    "scripts": {
+        "test": "npm test --workspace=@zanetta/antigravity4cursor",
+        "test:cli": "npm test --workspace=@zanetta/antigravity4cursor"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/zanetta/antigravity4cursor.git"
+    },
+    "license": "MIT"
+}

@@ -1,0 +1,47 @@
+{
+    "name": "@zanetta/antigravity4cursor",
+    "version": "1.0.0",
+    "description": "CLI to install antigravity4cursor — AG Kit port for Cursor IDE",
+    "type": "module",
+    "main": "bin/index.js",
+    "engines": {
+        "node": ">=18"
+    },
+    "bin": {
+        "antigravity4cursor": "bin/index.js"
+    },
+    "files": [
+        "bin",
+        "lib"
+    ],
+    "scripts": {
+        "test": "node --test test/*.test.js"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/zanetta/antigravity4cursor.git",
+        "directory": "cli"
+    },
+    "homepage": "https://github.com/zanetta/antigravity4cursor#readme",
+    "bugs": {
+        "url": "https://github.com/zanetta/antigravity4cursor/issues"
+    },
+    "keywords": [
+        "cursor",
+        "antigravity",
+        "ag-kit",
+        "ai",
+        "agent",
+        "skills",
+        "cli"
+    ],
+    "author": "zanetta",
+    "license": "MIT",
+    "dependencies": {
+        "chalk": "^5.6.2",
+        "commander": "^12.1.0",
+        "fs-extra": "^11.3.3",
+        "giget": "^2.0.0",
+        "ora": "^8.2.0"
+    }
+}

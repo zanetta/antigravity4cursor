@@ -6,7 +6,7 @@ Port do [AG Kit](https://github.com/vudovn/ag-kit) (Antigravity Kit) para o **Cu
 
 ## O que é
 
-Este repositório **não** é o pacote npm `@vudovn/ag-kit`. É a configuração completa do kit pronta para usar no Cursor:
+Este repositório inclui o pacote npm **`@zanetta/antigravity4cursor`** (pasta `cli/`) para instalação via `npx`. Também funciona como template git manual.
 
 | Componente | Onde fica |
 | --- | --- |
@@ -25,7 +25,53 @@ Documentação detalhada: [`.cursor/ARCHITECTURE.md`](.cursor/ARCHITECTURE.md) �
 
 ## Quick Start
 
-### 1. Usar este repo como template
+### 1. Instalar no seu projeto (recomendado)
+
+Na raiz do projeto onde você desenvolve:
+
+```bash
+# One-shot (sem instalar globalmente)
+npx @zanetta/antigravity4cursor init
+
+# Ou instalação global
+npm install -g @zanetta/antigravity4cursor
+antigravity4cursor init
+```
+
+**O que o `init` copia (instalação full):**
+
+| Item | Destino |
+| --- | --- |
+| Agents | `.claude/agents/` |
+| Skills + memory | `.agents/` |
+| Commands, rules, scripts, MCP | `.cursor/` |
+| Regras globais | `AGENTS.md`, `AGENT_FLOW.md` |
+| Template de env | `.env.example` |
+
+**Modo merge (padrão):** arquivos novos são adicionados; arquivos que já existem são preservados. Exceções:
+
+- **`.cursor/mcp.json`** — merge: servidores do kit são adicionados; os seus prevalecem em conflito de nome
+- **`.cursor/rules/*.mdc`** — regras existentes não são sobrescritas
+
+Para sobrescrever tudo (cuidado em projetos customizados):
+
+```bash
+npx @zanetta/antigravity4cursor init --force
+```
+
+Outros comandos:
+
+```bash
+npx @zanetta/antigravity4cursor status
+npx @zanetta/antigravity4cursor update          # merge novos arquivos do kit
+npx @zanetta/antigravity4cursor update --force  # sobrescrever kit inteiro
+npx @zanetta/antigravity4cursor init --dry-run  # simular sem escrever
+```
+
+> **Publicação npm:** após `npm publish` no workspace `cli/`. Até lá, teste localmente:
+> `ANTIGRAVITY4CURSOR_REPO=/caminho/antigravity4cursor node cli/bin/index.js init --path /tmp/meu-projeto`
+
+### 2. Alternativa manual (sem npm)
 
 Clone ou copie para a raiz do seu projeto de aplicação:
 
@@ -34,18 +80,18 @@ git clone https://github.com/zanetta/antigravity4cursor.git
 # ou copie apenas .claude/, .agents/, .cursor/, AGENTS.md
 ```
 
-### 2. Configurar MCP (opcional)
+### 3. Configurar MCP (opcional)
 
 ```bash
 cp .env.example .env
 # Edite CONTEXT7_API_KEY em .env
 ```
 
-### 3. Slash commands no Cursor
+### 4. Slash commands no Cursor
 
 Digite `/` no chat do **Agent** (modo Agent) para ver autocomplete, ou use os exemplos da seção [Como utilizar os comandos](#como-utilizar-os-comandos).
 
-### 4. Validar o projeto
+### 5. Validar o projeto
 
 ```bash
 python3 .cursor/scripts/checklist.py .
@@ -154,14 +200,11 @@ Cenário: você vai criar uma aplicação do zero (ex.: SaaS, app interno, MVP).
 
 ```bash
 # Na pasta do novo repo (vazio ou recém-criado)
-cp -r /caminho/antigravity4cursor/.claude .
-cp -r /caminho/antigravity4cursor/.agents .
-cp -r /caminho/antigravity4cursor/.cursor .
-cp /caminho/antigravity4cursor/AGENTS.md .
-cp /caminho/antigravity4cursor/AGENT_FLOW.md .   # opcional
-cp /caminho/antigravity4cursor/.env.example .
+npx @zanetta/antigravity4cursor init
 git add . && git commit -m "chore: add antigravity4cursor kit"
 ```
+
+Alternativa manual: copie `.claude/`, `.agents/`, `.cursor/`, `AGENTS.md` deste repositório.
 
 Configure MCP se for usar Context7/Playwright via [`.cursor/mcp.json`](.cursor/mcp.json).
 
@@ -259,7 +302,15 @@ Cenário: o código já existe; você adiciona o kit ou já o usa e precisa evol
 
 #### Passo 1 — Adicionar o kit sem quebrar o repo
 
-Copie apenas as pastas do kit para a **raiz do projeto existente** (mesmo procedimento da Fase 0 acima). Não substitua `package.json`, `src/` nem configs do app — apenas **adicione** `.claude/`, `.agents/`, `.cursor/`, `AGENTS.md`.
+Na raiz do projeto existente:
+
+```bash
+npx @zanetta/antigravity4cursor init
+```
+
+Modo **merge** (padrão): preserva `.cursor/rules/` e `mcp.json` customizados; adiciona o restante do kit. Use `--force` apenas se quiser sobrescrever tudo.
+
+Alternativa manual: copie as pastas do kit sem substituir `package.json`, `src/` nem configs do app.
 
 Revise conflitos:
 
@@ -351,7 +402,7 @@ flowchart TD
 | `GEMINI.md` | `AGENTS.md` + `.cursor/rules/*.mdc` |
 | `$ARGUMENTS` nos workflows | Texto livre após o comando |
 | Auto-routing nativo | Documentado; aplicado pelo agente quando relevante |
-| `npx @vudovn/ag-kit init` | Use este repo ou `sync_upstream.py` |
+| `npx @vudovn/ag-kit init` | `npx @zanetta/antigravity4cursor init` |
 
 Limitações completas: seção **Limitações da migração** em [`AGENTS.md`](AGENTS.md).
 
@@ -390,6 +441,7 @@ Recomendação: rode dry-run após cada release upstream; revise diff antes de `
 .
 ├── AGENTS.md                 # Regras sempre-ativas
 ├── AGENT_FLOW.md             # Diagrama de fluxo
+├── cli/                      # @zanetta/antigravity4cursor (npm)
 ├── .claude/agents/           # 20 personas
 ├── .agents/
 │   ├── skills/               # 45 skills

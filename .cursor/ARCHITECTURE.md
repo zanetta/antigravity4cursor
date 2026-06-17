@@ -14,7 +14,7 @@
 | **Regras globais** | 1 | `AGENTS.md` |
 | **Regras por domínio** | 7 | `.cursor/rules/*.mdc` |
 | **Memória persistente** | — | `.agents/memory/MEMORY.md` |
-| **Scripts master** | 4 | `.cursor/scripts/` |
+| **Scripts master** | 4 | `.cursor/scripts/` (+ npm CLI em `cli/`) |
 | **MCP** | — | `.cursor/mcp.json` |
 | **Assets compartilhados** | — | `.cursor/shared/` (ex.: `ui-ux-pro-max`) |
 
@@ -227,6 +227,7 @@ allowed-tools: Read, Grep, Glob
 | `checklist.py` | Validação core (dev, pre-commit) |
 | `verify_all.py` | Suite completa (pre-deploy) |
 | `sync_upstream.py` | Compare/sync com [ag-kit](https://github.com/vudovn/ag-kit) |
+| `@zanetta/antigravity4cursor` | CLI npm: `init`, `update`, `status` (pasta `cli/`) |
 | `session_manager.py` | Gestão de sessão |
 | `auto_preview.py` | Preview automático |
 
@@ -240,8 +241,10 @@ python3 .cursor/scripts/checklist.py .
 python3 .cursor/scripts/verify_all.py . --url http://localhost:3000
 
 # Sync com upstream
-python3 .cursor/scripts/sync_upstream.py          # dry-run
-python3 .cursor/scripts/sync_upstream.py --apply  # aplicar
+python3 .cursor/scripts/sync_upstream.py --apply
+
+# Instalar kit em outro projeto (CLI npm)
+npx @zanetta/antigravity4cursor init
 ```
 
 Skill-level scripts ficam em `.agents/skills/<skill>/scripts/`.
