@@ -1,10 +1,12 @@
 {
-    "name": "antigravity4cursor-monorepo",
+    "name": "@zanetta/antigravity4cursor",
     "private": true,
-    "description": "AG Kit port for Cursor IDE — monorepo root",
+    "description": "AG Kit port for Cursor IDE",
     "workspaces": [
         "cli"
-    ],
+    ],"publishConfig": {
+        "registry": "https://npmjs.org"
+    },
     "scripts": {
         "test": "npm test --workspace=@zanetta/antigravity4cursor",
         "test:cli": "npm test --workspace=@zanetta/antigravity4cursor"

@@ -68,8 +68,7 @@ npx @zanetta/antigravity4cursor update --force  # sobrescrever kit inteiro
 npx @zanetta/antigravity4cursor init --dry-run  # simular sem escrever
 ```
 
-> **Publicação npm:** após `npm publish` no workspace `cli/`. Até lá, teste localmente:
-> `ANTIGRAVITY4CURSOR_REPO=/caminho/antigravity4cursor node cli/bin/index.js init --path /tmp/meu-projeto`
+> **Publicação npm:** push de tag `v1.0.0` dispara o [workflow de publish](.github/workflows/publish-npm.yml). Antes do primeiro release, configure o secret `NPM_TOKEN` no GitHub. Teste local: `ANTIGRAVITY4CURSOR_REPO=/caminho/antigravity4cursor node cli/bin/index.js init --path /tmp/meu-projeto`
 
 ### 2. Alternativa manual (sem npm)
 
