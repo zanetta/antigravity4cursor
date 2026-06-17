@@ -8,7 +8,8 @@
     ],
     "scripts": {
         "test": "npm test --workspace=@zanetta/antigravity4cursor",
-        "test:cli": "npm test --workspace=@zanetta/antigravity4cursor"
+        "test:cli": "npm test --workspace=@zanetta/antigravity4cursor",
+        "publish": "npm publish --workspace=@zanetta/antigravity4cursor --access public"
     },
     "repository": {
         "type": "git",
