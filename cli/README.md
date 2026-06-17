@@ -72,3 +72,44 @@ npm install
 npm test --workspace=@zanetta/antigravity4cursor
 npm publish --workspace=@zanetta/antigravity4cursor --access public
 ```
+
+Se o npm pedir OTP após habilitar 2FA:
+
+```bash
+npm publish --workspace=@zanetta/antigravity4cursor --access public --otp=123456
+```
+
+### Troubleshooting publish
+
+| Erro | Causa | Solução |
+| --- | --- | --- |
+| `ENEEDAUTH` | Token ausente ou registry errado | Use `registry.npmjs.org` no `.npmrc`; `npm login` |
+| `E403` + *Two-factor authentication… required* | 2FA desligada na conta | Habilitar 2FA no npm **ou** token granular com bypass 2FA |
+| `E403` + *You do not have permission* | Scope/org incorreto | Publicar com conta dona de `@zanetta` |
+
+#### Erro E403 — 2FA obrigatória para publish
+
+O npm exige **uma** destas opções para publicar pacotes:
+
+**Opção A — 2FA na conta (recomendado para publish local)**
+
+1. [npm → Account → Security](https://www.npmjs.com/settings/zanetta/tfa) → Enable 2FA (**Authorization and publishing**)
+2. Publicar com código do app autenticador:
+
+   ```bash
+   npm publish --workspace=@zanetta/antigravity4cursor --access public --otp=SEU_CODIGO
+   ```
+
+**Opção B — Token granular (recomendado para CI e opcional local)**
+
+1. [npm → Access Tokens → Generate New Token → Granular Access Token](https://www.npmjs.com/settings/zanetta/tokens)
+2. Permissions: **Read and Write** em `@zanetta/antigravity4cursor` (ou `@zanetta/*`)
+3. Marque **Bypass two-factor authentication for automation**
+4. Use o token:
+
+   ```bash
+   npm config set //registry.npmjs.org/:_authToken npm_SEU_TOKEN
+   npm publish --workspace=@zanetta/antigravity4cursor --access public
+   ```
+
+Para **GitHub Actions**, o secret `NPM_TOKEN` deve ser um token granular com **bypass 2FA** (ou Automation token), não o token de sessão do `npm login` sem bypass.
