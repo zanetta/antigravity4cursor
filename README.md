@@ -240,15 +240,15 @@ python3 .cursor/scripts/verify_all.py . --url http://localhost:3000
 
 ```mermaid
 flowchart LR
-  A[Instalar kit] --> B[/brainstorm/]
-  B --> C[/remember/]
-  C --> D[/plan/]
-  D --> E[/create/]
-  E --> F[/enhance/ + /preview/]
-  F --> G[/test/ + /verify/]
+  A[Instalar kit] --> B["brainstorm"]
+  B --> C["remember"]
+  C --> D["plan"]
+  D --> E["create"]
+  E --> F["enhance + preview"]
+  F --> G["test + verify"]
   G --> H{Pronto?}
   H -->|Não| F
-  H -->|Sim| I[/deploy/]
+  H -->|Sim| I["deploy"]
 ```
 
 ---
@@ -328,16 +328,16 @@ Exemplo — bug:
 
 ```mermaid
 flowchart TD
-  A[Kit na raiz do repo] --> B[/remember convenções/]
+  A[Kit na raiz do repo] --> B["remember convenções"]
   B --> C{Tipo de trabalho?}
-  C -->|Feature| D[/plan/ → /enhance/]
-  C -->|Bug| E[/debug/ → /verify/]
-  C -->|Grande / multi-domínio| F[/coordinate/]
-  D --> G[/test/ + /verify/]
+  C -->|Feature| D["plan → enhance"]
+  C -->|Bug| E["debug → verify"]
+  C -->|Grande multi-domínio| F["coordinate"]
+  D --> G["test + verify"]
   E --> G
   F --> G
   G --> H[checklist.py]
-  H --> I[/deploy/ quando aplicável]
+  H --> I["deploy quando aplicável"]
 ```
 
 ---
