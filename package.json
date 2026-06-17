@@ -1,5 +1,6 @@
 {
     "name": "@zanetta/antigravity4cursor",
+    "version": "1.0.2",
     "private": true,
     "description": "AG Kit port for Cursor IDE",
     "workspaces": [
