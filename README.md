@@ -142,6 +142,206 @@ Definições completas de cada workflow: arquivos em [`.cursor/commands/`](.curs
 
 ---
 
+## Fluxo de desenvolvimento
+
+Guia prático de como encadear comandos e validações do kit — do zero até deploy. Use como roteiro; adapte ao tamanho do projeto.
+
+### Novo projeto (greenfield)
+
+Cenário: você vai criar uma aplicação do zero (ex.: SaaS, app interno, MVP).
+
+#### Fase 0 — Instalar o kit no repositório
+
+```bash
+# Na pasta do novo repo (vazio ou recém-criado)
+cp -r /caminho/antigravity4cursor/.claude .
+cp -r /caminho/antigravity4cursor/.agents .
+cp -r /caminho/antigravity4cursor/.cursor .
+cp /caminho/antigravity4cursor/AGENTS.md .
+cp /caminho/antigravity4cursor/AGENT_FLOW.md .   # opcional
+cp /caminho/antigravity4cursor/.env.example .
+git add . && git commit -m "chore: add antigravity4cursor kit"
+```
+
+Configure MCP se for usar Context7/Playwright via [`.cursor/mcp.json`](.cursor/mcp.json).
+
+#### Fase 1 — Descoberta e decisões
+
+| Passo | Comando | Objetivo |
+| --- | --- | --- |
+| 1 | `/brainstorm` | Comparar stacks, riscos, escopo do MVP |
+| 2 | `/remember` | Fixar decisões (ex.: Next.js 15, Postgres, Tailwind v4) |
+| 3 | `/plan` | Plano com milestones, pastas e checklist |
+
+Exemplo de sequência no Agent:
+
+```text
+/brainstorm MVP de gestão de tarefas: web, auth, equipes, mobile depois. Restrição: deploy na Vercel.
+
+/remember Stack: Next.js App Router, Prisma, PostgreSQL, Tailwind v4, bun. Sem tons roxo/violeta na UI.
+
+/plan MVP com auth email/senha, CRUD de projetos e tarefas, dashboard. Incluir testes e schema DB.
+```
+
+Para escopo grande ou full-stack desde o início, considere `/coordinate` ou `/orchestrate` **depois** do `/plan`, para revisar arquitetura com múltiplos specialists.
+
+#### Fase 2 — Scaffold e implementação
+
+| Passo | Comando | Objetivo |
+| --- | --- | --- |
+| 1 | `/create` | Gerar estrutura inicial (app, API, DB conforme o plano) |
+| 2 | `/ui-ux-pro-max` | Definir direção visual (opcional, antes ou junto do UI) |
+| 3 | `/preview` | Subir dev server e validar localmente |
+| 4 | `/enhance` | Iterar features do plano, uma por vez |
+
+```text
+/create seguir o plano em [nome-do-plano].md — monorepo não, app Next.js na raiz.
+
+/ui-ux-pro-max dashboard produtividade, estilo clean, paleta neutra com acento verde.
+
+/preview iniciar dev server e confirmar que a home carrega.
+```
+
+Implemente **incrementalmente**: conclua um bloco do plano → `/verify` → próximo bloco. Evite pedir “faça tudo” num único `/create`.
+
+#### Fase 3 — Qualidade contínua
+
+Durante o desenvolvimento, após cada entrega relevante:
+
+```text
+/test unitários para services de tarefas e integração para API /api/projects
+
+/verify rodar build, migrations e smoke test do fluxo login → criar tarefa
+
+/status
+```
+
+No terminal:
+
+```bash
+python3 .cursor/scripts/checklist.py .
+```
+
+#### Fase 4 — Pré-deploy e release
+
+```text
+/coordinate revisão final: segurança (auth), performance (LCP), testes E2E dos fluxos críticos
+
+/deploy preparar release produção Vercel — variáveis de ambiente e migrations
+```
+
+Validação completa:
+
+```bash
+python3 .cursor/scripts/verify_all.py . --url http://localhost:3000
+```
+
+#### Visão do fluxo (novo projeto)
+
+```mermaid
+flowchart LR
+  A[Instalar kit] --> B[/brainstorm/]
+  B --> C[/remember/]
+  C --> D[/plan/]
+  D --> E[/create/]
+  E --> F[/enhance/ + /preview/]
+  F --> G[/test/ + /verify/]
+  G --> H{Pronto?}
+  H -->|Não| F
+  H -->|Sim| I[/deploy/]
+```
+
+---
+
+### Projeto já iniciado (brownfield)
+
+Cenário: o código já existe; você adiciona o kit ou já o usa e precisa evoluir o produto sem recomeçar do zero.
+
+#### Passo 1 — Adicionar o kit sem quebrar o repo
+
+Copie apenas as pastas do kit para a **raiz do projeto existente** (mesmo procedimento da Fase 0 acima). Não substitua `package.json`, `src/` nem configs do app — apenas **adicione** `.claude/`, `.agents/`, `.cursor/`, `AGENTS.md`.
+
+Revise conflitos:
+
+- Se já existir `.cursor/` com configs suas, **mescle** manualmente (`commands/`, `rules/`, `mcp.json`).
+- Documente convenções existentes com `/remember` em vez de sobrescrever código.
+
+```text
+/remember Este projeto usa npm (não bun). ESLint flat config em eslint.config.mjs. API em src/server/.
+```
+
+Opcional: peça ao Agent um mapa rápido antes de mudanças grandes:
+
+```text
+Explorar a estrutura do repo e resumir: stack, pastas principais, como rodar testes e build.
+```
+
+(O agent `explorer-agent` e a skill `architecture` ajudam nessa leitura.)
+
+#### Passo 2 — Entender antes de mudar
+
+| Situação | Comando sugerido |
+| --- | --- |
+| Nova feature no código existente | `/plan` → `/enhance` |
+| Refatoração ou dívida técnica | `/brainstorm` opções → `/plan` → `/enhance` |
+| Bug em produção ou staging | `/debug` → `/verify` |
+| Feature full-stack tocando várias camadas | `/coordinate` ou `/orchestrate` |
+
+Exemplo — nova feature:
+
+```text
+/plan adicionar exportação CSV na listagem de pedidos — respeitar padrões em src/features/orders/
+
+/enhance implementar export CSV async, limite 10k linhas, testes unitários no service
+
+/test cobrir service de export e rota GET /api/orders/export
+
+/verify build + testes + curl na rota com token de teste
+```
+
+Exemplo — bug:
+
+```text
+/debug checkout falha no Safari iOS — cart fica vazio após refresh. Logs e passos anexados.
+
+/verify reproduzir fix no fluxo guest checkout e logged-in
+```
+
+#### Passo 3 — Ritmo de trabalho no dia a dia
+
+1. **Início de sessão** — leia `.agents/memory/MEMORY.md` ou peça: “Quais convenções deste projeto estão na memória?”
+2. **Tarefa pequena** — `/enhance` ou pedido direto no Agent (com rules por domínio já ativas).
+3. **Tarefa média** — `/plan` curto → implementação → `/verify`.
+4. **Antes de PR** — `/test` + `python3 .cursor/scripts/checklist.py .`
+5. **Antes de merge/release** — `/verify` + `/deploy` (ou pipeline CI equivalente)
+
+#### Passo 4 — Evitar armadilhas em projeto existente
+
+| Evitar | Preferir |
+| --- | --- |
+| `/create` para reescrever app inteiro | `/enhance` + plano incremental |
+| Ignorar padrões já no código | `/remember` + seguir estilo existente |
+| Deploy sem `/verify` | Provar build/testes na sessão |
+| Segredos no `/remember` | `.env` + `.env.example` |
+
+#### Visão do fluxo (projeto existente)
+
+```mermaid
+flowchart TD
+  A[Kit na raiz do repo] --> B[/remember convenções/]
+  B --> C{Tipo de trabalho?}
+  C -->|Feature| D[/plan/ → /enhance/]
+  C -->|Bug| E[/debug/ → /verify/]
+  C -->|Grande / multi-domínio| F[/coordinate/]
+  D --> G[/test/ + /verify/]
+  E --> G
+  F --> G
+  G --> H[checklist.py]
+  H --> I[/deploy/ quando aplicável]
+```
+
+---
+
 ## Diferenças vs AG Kit upstream
 
 | Upstream (Gemini/Antigravity) | Este port (Cursor) |
