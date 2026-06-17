@@ -43,14 +43,7 @@ cp .env.example .env
 
 ### 3. Slash commands no Cursor
 
-Digite no chat do Agent, por exemplo:
-
-```
-/plan implementar autenticação JWT
-/coordinate revisar segurança e performance da API
-/remember prefiro bun em vez de npm
-/verify build passa após refactor
-```
+Digite `/` no chat do **Agent** (modo Agent) para ver autocomplete, ou use os exemplos da seção [Como utilizar os comandos](#como-utilizar-os-comandos).
 
 ### 4. Validar o projeto
 
@@ -58,6 +51,94 @@ Digite no chat do Agent, por exemplo:
 python3 .cursor/scripts/checklist.py .
 python3 .cursor/scripts/verify_all.py . --url http://localhost:3000
 ```
+
+---
+
+## Como utilizar os comandos
+
+Os slash commands ficam em `.cursor/commands/` e são invocados no **chat do Agent** do Cursor. A sintaxe é sempre:
+
+```text
+/<comando> [descrição em texto livre]
+```
+
+O texto após o comando é o contexto da tarefa — não use placeholders; descreva o que precisa em linguagem natural.
+
+### Onde digitar
+
+1. Abra o projeto no Cursor com esta pasta na raiz (ou com `.cursor/commands/` presente).
+2. Use o painel **Agent** (não o Ask simples, para tarefas que alteram código).
+3. Digite `/` — o Cursor deve sugerir os comandos disponíveis.
+4. Complete com `/plan`, `/debug`, etc. e adicione o pedido na mesma mensagem.
+
+### Referência de comandos
+
+| Comando | Quando usar | Exemplo |
+| --- | --- | --- |
+| `/brainstorm` | Explorar opções e arquitetura **antes** de codar | `/brainstorm qual stack usar para um SaaS multi-tenant?` |
+| `/plan` | Quebrar uma tarefa em plano e checklist | `/plan implementar autenticação JWT com refresh token` |
+| `/create` | Criar feature nova ou app do zero | `/create landing page Next.js com formulário de waitlist` |
+| `/enhance` | Melhorar código ou feature **existente** com segurança | `/enhance adicionar paginação na listagem de usuários` |
+| `/debug` | Investigar bug com método sistemático | `/debug login retorna 401 após deploy` |
+| `/test` | Gerar ou executar testes | `/test cobrir fluxo de checkout com Playwright` |
+| `/verify` | **Executar** e provar que funciona (não só ler código) | `/verify build passa após o refactor do módulo auth` |
+| `/deploy` | Pré-flight checks e deploy | `/deploy preparar release para Vercel` |
+| `/preview` | Subir ou checar servidor de preview local | `/preview iniciar dev server na porta 3000` |
+| `/status` | Relatório do progresso da tarefa atual | `/status` |
+| `/orchestrate` | Multi-agente clássico (mín. 3 specialists) | `/orchestrate painel admin com CRUD e testes E2E` |
+| `/coordinate` | Orquestração avançada (paralelo + síntese) | `/coordinate revisar segurança e performance da API em paralelo` |
+| `/remember` | Salvar preferência ou convenção entre sessões | `/remember prefiro bun em vez de npm neste projeto` |
+| `/ui-ux-pro-max` | Design system com estilos/paletas (Cursor-only) | `/ui-ux-pro-max dashboard fintech dark mode minimalista` |
+
+### Fluxo recomendado por tipo de tarefa
+
+**Feature nova (média/grande complexidade)**
+
+```text
+/brainstorm [ideia e restrições]
+/plan [escopo fechado após brainstorm]
+/create ou /enhance [implementação]
+/test [cobertura]
+/verify [provar que roda]
+/deploy [quando estiver pronto]
+```
+
+**Bug ou comportamento estranho**
+
+```text
+/debug [sintoma, erro, passos para reproduzir]
+/verify [confirmar que o fix funciona]
+```
+
+**Tarefa full-stack ou multi-domínio**
+
+```text
+/coordinate [visão geral]   ← paralelo, fases Research → Synthesis → Implementation
+/orchestrate [visão geral]  ← alternativa com mínimo 3 agents
+```
+
+**Convenções do projeto (persistir)**
+
+```text
+/remember sempre usar Tailwind v4, nunca v3
+/remember API base URL em staging é https://api.staging.example.com
+```
+
+Memória salva em `.agents/memory/` e reutilizada em sessões futuras via skill `memory-system`.
+
+### Dicas
+
+- **Seja específico** — quanto mais contexto após o comando, melhor o resultado (`/debug` com stack trace, URL, passos).
+- **Um comando por mensagem** — evite misturar `/plan` e `/create` na mesma linha; encadeie em mensagens separadas.
+- **Modo Agent** — comandos que editam arquivos precisam de permissão para alterar o workspace.
+- **Memória** — use `/remember` para decisões que o agente deve repetir (stack, estilo, URLs); não para segredos (use `.env`).
+- **Validação manual** — após `/verify` ou `/deploy`, você pode rodar também:
+
+  ```bash
+  python3 .cursor/scripts/checklist.py .
+  ```
+
+Definições completas de cada workflow: arquivos em [`.cursor/commands/`](.cursor/commands/).
 
 ---
 
