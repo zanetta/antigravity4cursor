@@ -2,6 +2,8 @@
 
 Install the antigravity4cursor kit (AG Kit port for Cursor) into any project.
 
+**npm:** [`@zanetta/antigravity4cursor@1.0.0`](https://www.npmjs.com/package/@zanetta/antigravity4cursor)
+
 ## Usage
 
 ```bash
@@ -11,6 +13,8 @@ npx @zanetta/antigravity4cursor init --dry-run
 npx @zanetta/antigravity4cursor update
 npx @zanetta/antigravity4cursor status
 ```
+
+`init` instala no **diretório atual** (`cwd`). Para outro path: `init --path ~/dev/meu-app`.
 
 ## Install scope (full)
 
@@ -32,7 +36,7 @@ npx @zanetta/antigravity4cursor status
 ```bash
 cd cli && npm install && npm test
 
-# Local install from repo root (before npm publish)
+# Local install from repo root (sem npm registry)
 ANTIGRAVITY4CURSOR_REPO=/path/to/antigravity4cursor \
   node bin/index.js init --path /tmp/my-app --dry-run
 ```
@@ -42,74 +46,91 @@ ANTIGRAVITY4CURSOR_REPO=/path/to/antigravity4cursor \
 Publicação automática ao push de uma tag `v*`:
 
 ```bash
-# 1. Atualize a versão no cli/package.json (opcional — o CI sincroniza pela tag)
-# 2. Commit, tag e push
-git tag v1.0.0
-git push origin v1.0.0
+git tag v1.0.1
+git push origin v1.0.1
 ```
 
-O workflow [`.github/workflows/publish-npm.yml`](../.github/workflows/publish-npm.yml):
+Workflow: [`.github/workflows/publish-npm.yml`](../.github/workflows/publish-npm.yml)
 
-1. Extrai a versão da tag (`v1.2.3` → `1.2.3`)
+1. Extrai versão da tag (`v1.2.3` → `1.2.3`)
 2. Atualiza `cli/package.json`
 3. Roda `npm ci` + `npm test`
-4. Publica `@zanetta/antigravity4cursor` no npm
+4. Publica no npm
 
-### Secret obrigatório
-
-No GitHub: **Settings → Secrets and variables → Actions → New repository secret**
+### Secret GitHub
 
 | Secret | Valor |
 | --- | --- |
-| `NPM_TOKEN` | Token de acesso do npm ([Automation](https://www.npmjs.com/settings/~tokens) ou Classic com publish) |
-
-O usuário/npm org `@zanetta` precisa existir e o token deve ter permissão de **publish** no pacote.
+| `NPM_TOKEN` | Token granular com **publish** + **bypass 2FA** |
 
 ### Publish manual (local)
+
+Registry do projeto (`.npmrc`): `@zanetta:registry=https://registry.npmjs.org/`
 
 ```bash
 npm install
 npm test --workspace=@zanetta/antigravity4cursor
-npm publish --workspace=@zanetta/antigravity4cursor --access public
+npm publish --workspace=@zanetta/antigravity4cursor --access public --otp=CODIGO   # se 2FA ativa
 ```
 
-Se o npm pedir OTP após habilitar 2FA:
-
-```bash
-npm publish --workspace=@zanetta/antigravity4cursor --access public --otp=123456
-```
-
-### Troubleshooting publish
+## Troubleshooting
 
 | Erro | Causa | Solução |
 | --- | --- | --- |
-| `ENEEDAUTH` | Token ausente ou registry errado | Use `registry.npmjs.org` no `.npmrc`; `npm login` |
-| `E403` + *Two-factor authentication… required* | 2FA desligada na conta | Habilitar 2FA no npm **ou** token granular com bypass 2FA |
-| `E403` + *You do not have permission* | Scope/org incorreto | Publicar com conta dona de `@zanetta` |
+| `ENEEDAUTH` | Token ausente ou registry errado | Usar `registry.npmjs.org`; `npm login` |
+| `E403` (2FA) | Conta sem 2FA ou token sem bypass | 2FA + `--otp` ou token granular com bypass |
+| `E403` (permission) | Scope `@zanetta` incorreto | Publicar com conta dona do scope |
+| `E404` / `ENOVERSIONS` | `min-release-age` ou `before` no `~/.npmrc` | `NPM_CONFIG_MIN_RELEASE_AGE=0 npx …` |
+| Typo | Nome errado | `@zanetta/antigravity4cursor` |
 
-#### Erro E403 — 2FA obrigatória para publish
+### E404 / ENOVERSIONS no `npx init`
 
-O npm exige **uma** destas opções para publicar pacotes:
+Pacote publicado — confirme:
 
-**Opção A — 2FA na conta (recomendado para publish local)**
+```bash
+npm view @zanetta/antigravity4cursor version
+```
 
-1. [npm → Account → Security](https://www.npmjs.com/settings/zanetta/tfa) → Enable 2FA (**Authorization and publishing**)
-2. Publicar com código do app autenticador:
+Se retornar versão mas `npx` falha, verifique filtros:
 
-   ```bash
-   npm publish --workspace=@zanetta/antigravity4cursor --access public --otp=SEU_CODIGO
-   ```
+```bash
+npm config get min-release-age   # ex.: 7 bloqueia pacotes novos
+npm config get before
+```
 
-**Opção B — Token granular (recomendado para CI e opcional local)**
+Contorno:
 
-1. [npm → Access Tokens → Generate New Token → Granular Access Token](https://www.npmjs.com/settings/zanetta/tokens)
-2. Permissions: **Read and Write** em `@zanetta/antigravity4cursor` (ou `@zanetta/*`)
-3. Marque **Bypass two-factor authentication for automation**
-4. Use o token:
+```bash
+NPM_CONFIG_MIN_RELEASE_AGE=0 npx @zanetta/antigravity4cursor init
+# ou
+npm config delete min-release-age
+```
 
-   ```bash
-   npm config set //registry.npmjs.org/:_authToken npm_SEU_TOKEN
-   npm publish --workspace=@zanetta/antigravity4cursor --access public
-   ```
+### E403 — 2FA obrigatória para publish
 
-Para **GitHub Actions**, o secret `NPM_TOKEN` deve ser um token granular com **bypass 2FA** (ou Automation token), não o token de sessão do `npm login` sem bypass.
+**Opção A — 2FA + OTP (local):**
+
+1. [npm → Security → 2FA](https://www.npmjs.com/settings/zanetta/tfa) — modo **Authorization and publishing**
+2. `npm publish … --otp=SEU_CODIGO`
+
+**Opção B — Token granular (CI / local):**
+
+1. [Generate Granular Access Token](https://www.npmjs.com/settings/zanetta/tokens)
+2. Read and Write em `@zanetta/*` + **Bypass 2FA for automation**
+3. `npm config set //registry.npmjs.org/:_authToken npm_TOKEN`
+
+### Instalação em projeto existente
+
+```bash
+cd ~/dev/meu-projeto
+NPM_CONFIG_MIN_RELEASE_AGE=0 npx @zanetta/antigravity4cursor init
+```
+
+Merge preserva `.cursor/rules/` e `mcp.json` customizados.
+
+### Sem npm registry
+
+```bash
+ANTIGRAVITY4CURSOR_REPO=/caminho/antigravity4cursor \
+  node /caminho/antigravity4cursor/cli/bin/index.js init --path .
+```

@@ -11,15 +11,24 @@ Este repositório inclui o pacote npm **`@zanetta/antigravity4cursor`** (pasta `
 | Componente | Onde fica |
 | --- | --- |
 | 20 agents especialistas | `.claude/agents/` |
-| 45 skills | `.agents/skills/` |
-| 13 slash commands (+ `/ui-ux-pro-max`) | `.cursor/commands/` |
+| 45 skills (+ sub-skills de game-dev) | `.agents/skills/` |
+| 14 slash commands (13 upstream + `/ui-ux-pro-max`) | `.cursor/commands/` |
+| 7 regras por domínio | `.cursor/rules/*.mdc` |
+| CLI npm `@zanetta/antigravity4cursor@1.0.0` | `cli/` · [npm](https://www.npmjs.com/package/@zanetta/antigravity4cursor) |
 | Regras globais | `AGENTS.md` |
-| Regras por domínio (auto-attach) | `.cursor/rules/*.mdc` |
 | Memória persistente | `.agents/memory/` |
 | Scripts de validação + sync | `.cursor/scripts/` |
 | MCP (Context7, Playwright, shadcn) | `.cursor/mcp.json` |
 
-Documentação detalhada: [`.cursor/ARCHITECTURE.md`](.cursor/ARCHITECTURE.md) · fluxo: [`AGENT_FLOW.md`](AGENT_FLOW.md)
+Documentação detalhada:
+
+| Documento | Conteúdo |
+| --- | --- |
+| [`.cursor/ARCHITECTURE.md`](.cursor/ARCHITECTURE.md) | Arquitetura, skills, agents, npm |
+| [`AGENT_FLOW.md`](AGENT_FLOW.md) | Fluxo de agentes e validação |
+| [`AGENTS.md`](AGENTS.md) | Regras sempre-ativas (Cursor) |
+| [`cli/README.md`](cli/README.md) | CLI npm, publish, troubleshooting |
+| [`.cursor/scripts/README.md`](.cursor/scripts/README.md) | Scripts de validação e sync |
 
 ---
 
@@ -32,10 +41,13 @@ Na raiz do projeto onde você desenvolve:
 ```bash
 # One-shot (sem instalar globalmente)
 npx @zanetta/antigravity4cursor init
+```
 
-# Ou instalação global
-npm install -g @zanetta/antigravity4cursor
-antigravity4cursor init
+O `init` instala **no diretório atual** (`cwd`). Ex.: `cd ~/dev/meu-app && npx … init` copia o kit para `~/dev/meu-app`.
+
+```bash
+# Instalação global
+npm install -g @zanetta/antigravity4cursor antigravity4cursor init
 ```
 
 **O que o `init` copia (instalação full):**
@@ -68,7 +80,19 @@ npx @zanetta/antigravity4cursor update --force  # sobrescrever kit inteiro
 npx @zanetta/antigravity4cursor init --dry-run  # simular sem escrever
 ```
 
-> **Publicação npm:** push de tag `v1.0.0` dispara o [workflow de publish](.github/workflows/publish-npm.yml). Antes do primeiro release, configure o secret `NPM_TOKEN` no GitHub. Teste local: `ANTIGRAVITY4CURSOR_REPO=/caminho/antigravity4cursor node cli/bin/index.js init --path /tmp/meu-projeto`
+> Pacote publicado: [`@zanetta/antigravity4cursor@1.0.0`](https://www.npmjs.com/package/@zanetta/antigravity4cursor). Troubleshooting (`E404`, `min-release-age`, 2FA): [`cli/README.md`](cli/README.md).
+
+### Instalação npm — problemas comuns
+
+| Erro | Solução rápida |
+| --- | --- |
+| `E404` / `ENOVERSIONS` | `NPM_CONFIG_MIN_RELEASE_AGE=0 npx …` ou `npm config delete min-release-age` |
+| `ENEEDAUTH` | Registry deve ser `registry.npmjs.org` (ver `.npmrc` do projeto) |
+| `E403` (2FA) | Habilitar 2FA + `--otp=…` ou token granular com bypass 2FA |
+
+Detalhes: [`cli/README.md`](cli/README.md).
+
+> **Release npm:** tag `v*` dispara [`.github/workflows/publish-npm.yml`](.github/workflows/publish-npm.yml). Secret `NPM_TOKEN` no GitHub.
 
 ### 2. Alternativa manual (sem npm)
 
@@ -440,19 +464,25 @@ Recomendação: rode dry-run após cada release upstream; revise diff antes de `
 .
 ├── AGENTS.md                 # Regras sempre-ativas
 ├── AGENT_FLOW.md             # Diagrama de fluxo
+├── README.md                 # Este guia
+├── package.json              # Monorepo (workspace cli/)
+├── .npmrc                    # Registry @zanetta → registry.npmjs.org
 ├── cli/                      # @zanetta/antigravity4cursor (npm)
+├── .github/workflows/        # publish-npm.yml (tag v*)
 ├── .claude/agents/           # 20 personas
 ├── .agents/
-│   ├── skills/               # 45 skills
+│   ├── skills/               # 45 skills top-level
 │   └── memory/               # Memória cross-session
 └── .cursor/
     ├── ARCHITECTURE.md
-    ├── commands/             # /plan, /debug, …
-    ├── rules/                # frontend, backend, …
-    ├── scripts/              # checklist, sync_upstream
+    ├── commands/             # 14 slash commands
+    ├── rules/                # 7 regras por domínio
+    ├── scripts/              # checklist, verify_all, sync_upstream
     ├── shared/ui-ux-pro-max/
     └── mcp.json
 ```
+
+Documentação adicional: [`cli/README.md`](cli/README.md) · [`.cursor/ARCHITECTURE.md`](.cursor/ARCHITECTURE.md) · [`.cursor/scripts/README.md`](.cursor/scripts/README.md)
 
 ---
 

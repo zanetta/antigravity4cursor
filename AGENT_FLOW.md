@@ -4,6 +4,25 @@
 
 ---
 
+## 📦 Instalação do kit
+
+```bash
+cd ~/dev/seu-projeto
+NPM_CONFIG_MIN_RELEASE_AGE=0 npx @zanetta/antigravity4cursor init
+cp .env.example .env   # opcional — MCP Context7
+```
+
+| Modo | Comportamento |
+| --- | --- |
+| `init` (padrão) | Full install + **merge** (`mcp.json`, rules existentes preservados) |
+| `init --force` | Sobrescreve todos os arquivos do kit |
+| `update` | Baixa template atual e faz merge |
+| `status` | Verifica `.claude/`, `.agents/`, `.cursor/`, `AGENTS.md` |
+
+Pacote: [`@zanetta/antigravity4cursor`](https://www.npmjs.com/package/@zanetta/antigravity4cursor) · troubleshooting: [`cli/README.md`](cli/README.md)
+
+---
+
 ## 📊 Overview Flow Diagram
 
 ```
@@ -153,6 +172,7 @@ python3 .cursor/scripts/verify_all.py . --url http://localhost:3000
 
 | Recurso original | No Cursor |
 | --- | --- |
+| `npx @vudovn/ag-kit init` | `npx @zanetta/antigravity4cursor init` |
 | Auto-routing silencioso | Referência em `intelligent-routing`; agente aplica manualmente |
 | `GEMINI.md` tier P0/P1/P2 | `AGENTS.md` + rules por glob |
 | `$ARGUMENTS` | Texto livre após `/comando` |
@@ -165,7 +185,8 @@ python3 .cursor/scripts/verify_all.py . --url http://localhost:3000
 
 - Arquitetura: `.cursor/ARCHITECTURE.md`
 - Regras globais: `AGENTS.md`
+- CLI npm: `cli/README.md`
 - Sync upstream: `python3 .cursor/scripts/sync_upstream.py`
 - Upstream: https://github.com/vudovn/ag-kit
 
-**Last Updated:** 2026-06-17
+**Last Updated:** 2026-06-17 · **npm:** `@zanetta/antigravity4cursor@1.0.0`

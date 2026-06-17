@@ -50,7 +50,9 @@ Antes de modificar QUALQUER arquivo:
 | **Shared assets**   | `.cursor/shared/` (ex.: `ui-ux-pro-max`)   |
 | **Rules globais**   | `AGENTS.md` (este arquivo) — sempre aplicado |
 | **Rules por glob**  | `.cursor/rules/*.mdc` — Auto-Attached por domínio (frontend, backend, database, testing, security, mobile, devops) |
-| **Doc do kit**      | `.cursor/ARCHITECTURE.md`                  |
+| **Memória persistente** | `.agents/memory/MEMORY.md` |
+| **CLI npm (instalar kit)** | `npx @zanetta/antigravity4cursor init` · código em `cli/` |
+| **Doc do kit**      | `.cursor/ARCHITECTURE.md`, `AGENT_FLOW.md`, `README.md` |
 | **MCP env vars**    | `.env` (no `.gitignore`); template em `.env.example` |
 
 > O Cursor lê `.agents/skills/`, `.claude/agents/`, `.cursor/commands/`, `.cursor/rules/`, `.cursor/mcp.json` e `AGENTS.md` nativamente.
@@ -85,7 +87,7 @@ Antes de codificar, responda:
 | **Debug**                                | `debugger`                             | `systematic-debugging`           |
 | **DevOps / Deploy**                      | `devops-engineer`                      | `deployment-procedures`, `server-management` |
 | **Planejamento / Discovery**             | `project-planner`                      | `brainstorming`, `plan-writing`, `architecture` |
-| **Multi-domínio / complexo**             | `orchestrator`                         | `parallel-agents`, `behavioral-modes` |
+| **Multi-domínio / complexo**             | `orchestrator`                         | `coordinator-mode`, `parallel-agents`, `memory-system`, `verify-changes` |
 
 > Mobile + frontend-specialist = **ERRADO**. Mobile → `mobile-developer`.
 
@@ -173,7 +175,9 @@ Esses agents contêm:
 `orchestrator`, `project-planner`, `security-auditor`, `backend-specialist`, `frontend-specialist`, `mobile-developer`, `debugger`, `game-developer`.
 
 **Skills-chave** (em `.agents/skills/`):
-`clean-code`, `brainstorming`, `app-builder`, `frontend-design`, `mobile-design`, `plan-writing`, `behavioral-modes`, `parallel-agents`.
+`clean-code`, `brainstorming`, `app-builder`, `frontend-design`, `mobile-design`, `plan-writing`, `coordinator-mode`, `memory-system`, `verify-changes`, `parallel-agents`.
+
+**CLI npm:** `@zanetta/antigravity4cursor` — `init`, `update`, `status` ([`cli/README.md`](cli/README.md)).
 
 **Slash commands** (em `.cursor/commands/`):
 `/brainstorm`, `/coordinate`, `/create`, `/debug`, `/deploy`, `/enhance`, `/orchestrate`, `/plan`, `/preview`, `/remember`, `/status`, `/test`, `/ui-ux-pro-max`, `/verify`.

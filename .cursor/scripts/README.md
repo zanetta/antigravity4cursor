@@ -1,6 +1,6 @@
 # Master Scripts — antigravity4cursor
 
-Scripts em `.cursor/scripts/` orquestram validações e sync com o upstream.
+Scripts em `.cursor/scripts/` orquestram validações, sync com upstream e (via `cli/`) instalação npm.
 
 ## checklist.py
 
@@ -12,6 +12,8 @@ python3 .cursor/scripts/checklist.py . --url http://localhost:3000
 ```
 
 Ordem: Security → Lint → Schema → Tests → UX → SEO (+ Lighthouse se `--url`).
+
+Usa `sys.executable` (compatível com ambientes só `python3`).
 
 ## verify_all.py
 
@@ -38,6 +40,16 @@ Adaptações automáticas ao aplicar:
 - Workflows → `.cursor/commands/` sem `$ARGUMENTS`
 - Preserva `/ui-ux-pro-max` (não existe no upstream)
 
+## CLI npm (`cli/`)
+
+Instalar o kit em outro projeto:
+
+```bash
+NPM_CONFIG_MIN_RELEASE_AGE=0 npx @zanetta/antigravity4cursor init
+```
+
+Release automático: `.github/workflows/publish-npm.yml` (tag `v*`). Ver [`cli/README.md`](../../cli/README.md).
+
 ## Outros
 
 | Script | Uso |
@@ -46,3 +58,12 @@ Adaptações automáticas ao aplicar:
 | `auto_preview.py` | Preview de servidor local |
 
 Scripts por skill: `.agents/skills/<skill>/scripts/`.
+
+## Documentação relacionada
+
+| Arquivo | Conteúdo |
+| --- | --- |
+| [`README.md`](../../README.md) | Guia principal, comandos, fluxos |
+| [`AGENT_FLOW.md`](../../AGENT_FLOW.md) | Fluxo de agentes |
+| [`.cursor/ARCHITECTURE.md`](../ARCHITECTURE.md) | Arquitetura completa |
+| [`cli/README.md`](../../cli/README.md) | CLI npm + troubleshooting |

@@ -1,6 +1,6 @@
 # Antigravity Kit for Cursor — Architecture
 
-> Port compat-first do [AG Kit](https://github.com/vudovn/ag-kit) para o Cursor IDE — 2026.6.x
+> Port compat-first do [AG Kit](https://github.com/vudovn/ag-kit) para o Cursor IDE — **npm `@zanetta/antigravity4cursor@1.0.0`**
 
 ---
 
@@ -10,7 +10,7 @@
 | --- | --- | --- |
 | **Agents** | 20 | `.claude/agents/<name>.md` |
 | **Skills** | 45 | `.agents/skills/<name>/SKILL.md` |
-| **Workflows** | 13 (+1 Cursor) | `.cursor/commands/<name>.md` |
+| **Workflows** | 14 (13 upstream + 1 Cursor) | `.cursor/commands/<name>.md` |
 | **Regras globais** | 1 | `AGENTS.md` |
 | **Regras por domínio** | 7 | `.cursor/rules/*.mdc` |
 | **Memória persistente** | — | `.agents/memory/MEMORY.md` |
@@ -26,17 +26,21 @@
 antigravity4cursor/
 ├── AGENTS.md                    # Regras sempre-ativas (substitui GEMINI.md)
 ├── AGENT_FLOW.md                # Fluxo de agentes (adaptado ao Cursor)
-├── README.md                    # Guia de uso e sync com upstream
+├── README.md                    # Guia principal + fluxos de desenvolvimento
+├── package.json                 # Monorepo (workspace cli/)
+├── .npmrc                       # @zanetta → registry.npmjs.org
+├── cli/                         # Pacote npm @zanetta/antigravity4cursor
+├── .github/workflows/           # publish-npm.yml (release por tag v*)
 ├── .claude/agents/              # 20 personas especialistas
 ├── .agents/
-│   ├── skills/                  # 45 skills modulares
+│   ├── skills/                  # 45 skills top-level (+ sub-skills game-dev)
 │   └── memory/                  # Memória cross-session (MEMORY.md + tópicos)
 └── .cursor/
     ├── ARCHITECTURE.md          # Este arquivo
-    ├── commands/                # Slash commands (/plan, /debug, …)
-    ├── rules/                   # Auto-attach por glob (frontend, backend, …)
-    ├── scripts/                 # checklist, verify_all, sync_upstream
-    ├── shared/ui-ux-pro-max/    # Dados e scripts de design
+    ├── commands/                # 14 slash commands
+    ├── rules/                   # 7 regras auto-attach por glob
+    ├── scripts/                 # checklist, verify_all, sync_upstream, …
+    ├── shared/ui-ux-pro-max/    # Dados e scripts de design (Cursor-only)
     └── mcp.json                 # MCP servers (Context7, Playwright, shadcn)
 ```
 
@@ -50,6 +54,20 @@ antigravity4cursor/
 | `.agents/scripts/` | `.cursor/scripts/` |
 | `.agents/mcp_config.json` | `.cursor/mcp.json` |
 | `$ARGUMENTS` em workflows | Texto livre após o `/comando` |
+| `npx @vudovn/ag-kit init` | `npx @zanetta/antigravity4cursor init` |
+
+---
+
+## 📦 Distribuição npm
+
+| Item | Detalhe |
+| --- | --- |
+| Pacote | `@zanetta/antigravity4cursor@1.0.0` |
+| Binário | `antigravity4cursor` |
+| Comandos CLI | `init`, `update`, `status` |
+| Install default | Full + merge (`mcp.json`, rules) |
+| CI publish | `.github/workflows/publish-npm.yml` on tag `v*` |
+| Docs CLI | [`cli/README.md`](../cli/README.md) |
 
 ---
 
@@ -259,8 +277,9 @@ Detalhes: [scripts/README.md](scripts/README.md)
 | --- | --- |
 | Agents | 20 |
 | Skills | 45 |
-| Workflows upstream | 13 (+1 Cursor) |
-| Scripts master | 4 |
+| Workflows | 14 (13 upstream + 1 Cursor) |
+| Scripts em `.cursor/scripts/` | 5 |
+| CLI npm | `@zanetta/antigravity4cursor` |
 | Regras por domínio | 7 |
 | Cobertura | ~95% web/mobile + orquestração |
 
