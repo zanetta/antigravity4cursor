@@ -1,0 +1,47 @@
+---
+description: Regras de frontend (React/Next.js/UI) auto-anexadas em arquivos de UI
+globs: **/*.tsx,**/*.jsx,**/components/**,**/pages/**,**/app/**/*.ts,**/app/**/*.js,**/styles/**,**/*.css,**/*.scss
+alwaysApply: false
+---
+
+# Frontend Rules (Auto-Attached)
+
+Em arquivos de UI, aplique a persona **`frontend-specialist`** e carregue as skills:
+
+- `.agents/skills/clean-code/SKILL.md`
+- `.agents/skills/nextjs-react-expert/SKILL.md`
+- `.agents/skills/frontend-design/SKILL.md`
+- `.agents/skills/tailwind-patterns/SKILL.md`
+- `.agents/skills/web-design-guidelines/SKILL.md`
+- `.agents/skills/lint-and-validate/SKILL.md`
+
+## Princípios obrigatórios
+
+| Tema | Regra |
+| --- | --- |
+| **Paleta** | **Purple Ban** — nenhum tom roxo/violeta sem solicitação explícita do usuário |
+| **Templates** | **Template Ban** — nada de layouts SaaS-padrão clichês (hero esquerdo + screenshot direita, etc.) |
+| **Ícones** | SVG (Heroicons/Lucide). **Sem emojis como ícones de UI** |
+| **Cursor** | `cursor-pointer` em todos os elementos clicáveis |
+| **Transições** | `transition-colors duration-200`; nunca `transform: scale()` que cause layout shift |
+| **Contraste light** | Texto `#0F172A` (slate-900); muted `#475569` (slate-600); bordas `border-gray-200` |
+| **Glass cards light** | `bg-white/80` mín. (não `bg-white/10`) |
+| **Navbar flutuante** | `top-4 left-4 right-4`, nunca colada ao topo |
+| **Responsividade** | Testar 375 / 768 / 1024 / 1440 px; sem scroll horizontal mobile |
+
+## Deep Design Thinking (antes de criar UI nova)
+
+1. Quais variantes/estados a UI precisa?
+2. Quais decisões tipográficas (escala, peso, fonte)?
+3. Sistema de cor (primary, secondary, semantic, neutrais)?
+4. Hierarquia visual (foco, contraste, espaço)?
+5. Acessibilidade (WCAG AA mínimo, foco visível, ARIA)?
+
+Apenas **depois** de responder essas perguntas → escreva código.
+
+## Performance (Core Web Vitals)
+
+- Imagens com `next/image` ou `<img loading="lazy" decoding="async">`.
+- Code-splitting por rota; evite barril `index.ts` re-exportando 50 componentes.
+- Memoize listas longas; use `React.memo` apenas com profile que comprove.
+- Preferir Server Components no Next.js App Router quando possível.

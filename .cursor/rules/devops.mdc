@@ -1,0 +1,51 @@
+---
+description: Regras de DevOps (CI/CD, Docker, deploy) auto-anexadas em arquivos de infra
+globs: **/Dockerfile*,**/docker-compose*,**/.github/workflows/**,**/.gitlab-ci.yml,**/Jenkinsfile,**/terraform/**,**/k8s/**,**/kubernetes/**,**/helm/**,**/ansible/**,**/*.tf,**/*.tfvars,**/vercel.json,**/netlify.toml,**/fly.toml,**/railway.json
+alwaysApply: false
+---
+
+# DevOps Rules (Auto-Attached)
+
+Aplique a persona **`devops-engineer`** e carregue:
+
+- `.agents/skills/deployment-procedures/SKILL.md`
+- `.agents/skills/server-management/SKILL.md`
+- `.agents/skills/clean-code/SKILL.md`
+
+## Dockerfile
+
+| Regra | Razão |
+| --- | --- |
+| Multi-stage build | Imagem final pequena |
+| Usuário não-root no `CMD` final | Reduz superfície |
+| `.dockerignore` com `node_modules`, `.git`, `.env` | Build context limpo |
+| Pin de versão (`node:20.11.1-alpine`, não `node:latest`) | Reprodutibilidade |
+| `HEALTHCHECK` definido | Orquestrador detecta degradação |
+| Layers em ordem de menor → maior mudança | Cache eficiente |
+
+## CI/CD
+
+| Estágio | Obrigatório |
+| --- | --- |
+| Lint | `eslint`, `prettier --check`, `tsc --noEmit` |
+| Tests | Unit + Integration com `--coverage` |
+| Security | `npm audit --audit-level=high`, SAST (Semgrep/CodeQL) |
+| Build | Artefato versionado (semver + git SHA) |
+| Deploy | Blue/Green ou Canary, nunca direto em produção |
+| Smoke test pós-deploy | Health endpoint + 1 fluxo crítico |
+| Rollback | Documentado, testado, < 5min |
+
+## 5-Phase Deployment
+
+1. **Pre-flight**: lint, tests, audit, build.
+2. **Staging deploy**: smoke + integration test.
+3. **Canary** (5% → 25% → 50%): métricas (error rate, p95, CPU).
+4. **Full rollout**: 100% após métricas verdes por X minutos.
+5. **Post-deploy**: observabilidade ativa, alertas, runbook atualizado.
+
+## Observabilidade
+
+- Logs estruturados (JSON), centralizados.
+- Métricas: RED (Rate, Errors, Duration) por endpoint.
+- Traces (OpenTelemetry) em rotas críticas.
+- Alertas: SLO-based, não threshold cego.

@@ -1,0 +1,57 @@
+---
+description: Regras de backend (API/services/server) auto-anexadas em arquivos server-side
+globs: **/api/**,**/server/**,**/services/**,**/controllers/**,**/routes/**,**/middleware/**,**/handlers/**,**/*.server.ts,**/*.server.js
+alwaysApply: false
+---
+
+# Backend Rules (Auto-Attached)
+
+Em arquivos de backend, aplique a persona **`backend-specialist`** e carregue as skills:
+
+- `.agents/skills/clean-code/SKILL.md`
+- `.agents/skills/api-patterns/SKILL.md`
+- `.agents/skills/nodejs-best-practices/SKILL.md`
+- `.agents/skills/database-design/SKILL.md`
+- `.agents/skills/lint-and-validate/SKILL.md`
+
+## Princípios obrigatórios
+
+| Tema | Regra |
+| --- | --- |
+| **Boundary validation** | Validar inputs no boundary (zod/joi/yup). Nunca confiar em payload externo. |
+| **Erros** | Erros tipados (`AppError`, `ValidationError`); nunca `throw new Error('algo')` solto. |
+| **HTTP status** | 200/201 sucesso, 400 validation, 401 auth, 403 perm, 404 not-found, 409 conflict, 422 unprocessable, 5xx server. |
+| **Idempotência** | POST não-idempotente; usar PUT/PATCH/DELETE quando aplicável. Suportar `Idempotency-Key` em pagamentos. |
+| **Logs** | Estruturados (JSON) com `request_id`. Nunca logar senhas/tokens/PII. |
+| **Segredos** | `.env` + `process.env`. **Nunca hardcode** em código. |
+| **Rate limiting** | Endpoints públicos exigem rate-limit (`express-rate-limit` ou equivalente). |
+| **Auth** | Sessões com cookies `httpOnly`/`Secure`/`SameSite=Lax` ou tokens com expiração curta + refresh. |
+
+## Camadas obrigatórias
+
+```text
+HTTP layer (controller/handler)
+    ↓ valida input, formata output
+Service layer (regras de negócio)
+    ↓ orquestra repositórios, retorna domain objects
+Repository / Data layer (Prisma, query builder)
+    ↓ apenas operações de banco
+Database
+```
+
+> Não chamar Prisma direto do controller. Não colocar regra de negócio no repositório.
+
+## Performance
+
+- N+1: sempre usar `include`/`select` ou DataLoader.
+- Cache em camada de service (Redis) com TTL explícito.
+- Streaming para respostas grandes (paginação obrigatória > 100 itens).
+- Pool de conexões configurado (`prisma --connection-limit`).
+
+## Segurança baseline (toda rota)
+
+1. Autenticação (quem é?).
+2. Autorização (pode fazer isso?).
+3. Validação de schema.
+4. Sanitização contra SQL injection / XSS / path traversal.
+5. Logs de auditoria em operações sensíveis.

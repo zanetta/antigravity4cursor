@@ -1,0 +1,43 @@
+---
+description: Regras de mobile (React Native, Flutter, iOS, Android) auto-anexadas em arquivos mobile
+globs: **/*.swift,**/*.kt,**/*.kts,**/*.dart,**/android/**,**/ios/**,**/react-native/**,**/expo/**,**/App.tsx,**/App.jsx,**/mobile/**
+alwaysApply: false
+---
+
+# Mobile Rules (Auto-Attached)
+
+Em arquivos mobile, use a persona **`mobile-developer`** (NÃO `frontend-specialist`).
+
+Carregue:
+
+- `.agents/skills/mobile-design/SKILL.md`
+- `.agents/skills/clean-code/SKILL.md`
+
+## Princípios
+
+| Tema | Regra |
+| --- | --- |
+| **Touch target** | Mínimo 44×44pt (iOS) / 48×48dp (Android) |
+| **Safe areas** | Sempre respeitar (notch, dynamic island, gesture bar) — use `SafeAreaView` ou equivalente |
+| **Listas longas** | `FlatList`/`LazyColumn`/`ListView.builder` — nunca renderize 1000 itens com `map` |
+| **Imagens** | Cache + redimensionar no servidor antes (não baixar imagem de 4MB para mostrar thumb de 50px) |
+| **Offline-first** | Cache local (SQLite/AsyncStorage/Hive); sync em background |
+| **Animations** | 60fps obrigatório; use UI thread (Reanimated, Compose animations, SwiftUI `withAnimation`) |
+| **Permissions** | Pedir contexto: explicar **por que** antes do prompt do SO |
+| **Deep links** | Validar URL parameters; nunca executar payload arbitrário |
+
+## Performance
+
+- Bundle JS (RN/Expo) < 5MB.
+- Tempo de cold start < 2s no aparelho médio.
+- Memória: < 200MB em uso normal.
+- Battery: nada de `setInterval` curto rodando em background.
+
+## Plataforma-específico
+
+| iOS | Android |
+| --- | --- |
+| Human Interface Guidelines | Material Design 3 |
+| Haptic feedback (`UIImpactFeedbackGenerator`) | Haptic feedback (`HapticFeedback`) |
+| Dynamic Type | `sp` (não `dp`) para texto |
+| Dark mode via `traitCollection` | Dark mode via `Configuration.UI_MODE_NIGHT_MASK` |

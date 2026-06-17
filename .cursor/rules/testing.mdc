@@ -1,0 +1,62 @@
+---
+description: Regras de teste auto-anexadas em arquivos de teste
+globs: **/*.test.ts,**/*.test.tsx,**/*.test.js,**/*.spec.ts,**/*.spec.tsx,**/*.spec.js,**/__tests__/**,**/tests/**,**/e2e/**,**/cypress/**,**/playwright/**
+alwaysApply: false
+---
+
+# Testing Rules (Auto-Attached)
+
+Aplique a persona **`test-engineer`** e carregue:
+
+- `.agents/skills/testing-patterns/SKILL.md`
+- `.agents/skills/tdd-workflow/SKILL.md`
+- `.agents/skills/webapp-testing/SKILL.md`
+
+## Pirâmide de testes
+
+```text
+        E2E (poucos, lentos, valor de negócio)
+       ─────
+      Integration (módulos reais, dados reais)
+     ─────────
+    Unit (rápidos, isolados, muitos)
+```
+
+Proporção saudável: **70% unit / 20% int / 10% E2E**.
+
+## Padrão AAA
+
+```ts
+it('should X when Y', () => {
+  // Arrange
+  const input = ...;
+  // Act
+  const result = subject(input);
+  // Assert
+  expect(result).toEqual(...);
+});
+```
+
+## Regras
+
+| Regra | Por quê |
+| --- | --- |
+| Testar **comportamento**, não implementação | Refactor não pode quebrar testes |
+| 1 assertion principal por teste | Falha aponta a causa direto |
+| Nomes descritivos: `should X when Y` | Lê como spec |
+| Mock dependências externas (rede, DB, tempo) | Determinismo |
+| Nada de `sleep`/`setTimeout` arbitrário | Use `vi.useFakeTimers()` / `jest.useFakeTimers()` |
+| `beforeEach` deve resetar estado | Isolamento entre testes |
+| Snapshots curtos (< 15 linhas) ou diff focado | Snapshots gigantes ninguém revisa |
+| E2E só para fluxos críticos de negócio | E2E lento e flaky por natureza |
+
+## TDD (quando aplicável)
+
+1. **RED** — escreva o teste que falha, descrevendo o comportamento desejado.
+2. **GREEN** — implementação mínima para passar.
+3. **REFACTOR** — limpe sem quebrar testes.
+
+## Cobertura
+
+- Mínimo: **80%** lines/branches no módulo modificado (medir com `--coverage`).
+- 100% em código de pagamento, auth e crypto.
