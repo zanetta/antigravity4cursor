@@ -1,6 +1,6 @@
 # AGENTS.md
 
-> Regras sempre-ativas deste workspace. Adaptado de `.cursor/rules/GEMINI.md` (Antigravity Kit) para o Cursor IDE.
+> Regras sempre-ativas deste workspace. Adaptado do `GEMINI.md` do [AG Kit](https://github.com/vudovn/ag-kit) para o Cursor IDE.
 > Para o índice completo de agentes, skills, workflows e scripts, veja `.cursor/ARCHITECTURE.md`.
 
 ---
@@ -116,9 +116,10 @@ Quando o usuário disser "finalize", "rode os checks", "valida tudo" ou similar:
 
 | Estágio          | Comando                                                | Propósito                    |
 | ---------------- | ------------------------------------------------------ | ---------------------------- |
-| **Auditoria**    | `python .cursor/scripts/checklist.py .`                 | Auditoria por prioridade     |
-| **Pre-Deploy**   | `python .cursor/scripts/checklist.py . --url <URL>`     | Suite completa + Performance |
-| **Verify All**   | `python .cursor/scripts/verify_all.py .`                | Auditoria abrangente         |
+| **Auditoria**    | `python3 .cursor/scripts/checklist.py .`                | Auditoria por prioridade     |
+| **Pre-Deploy**   | `python3 .cursor/scripts/checklist.py . --url <URL>`    | Suite completa + Performance |
+| **Verify All**   | `python3 .cursor/scripts/verify_all.py .`               | Auditoria abrangente         |
+| **Sync upstream**| `python3 .cursor/scripts/sync_upstream.py --apply`      | Paridade com ag-kit          |
 
 **Ordem de prioridade**: Segurança → Lint → Schema → Tests → UX → SEO → Lighthouse/E2E.
 
@@ -175,7 +176,7 @@ Esses agents contêm:
 `clean-code`, `brainstorming`, `app-builder`, `frontend-design`, `mobile-design`, `plan-writing`, `behavioral-modes`, `parallel-agents`.
 
 **Slash commands** (em `.cursor/commands/`):
-`/brainstorm`, `/create`, `/debug`, `/deploy`, `/enhance`, `/orchestrate`, `/plan`, `/preview`, `/status`, `/test`, `/ui-ux-pro-max`.
+`/brainstorm`, `/coordinate`, `/create`, `/debug`, `/deploy`, `/enhance`, `/orchestrate`, `/plan`, `/preview`, `/remember`, `/status`, `/test`, `/ui-ux-pro-max`, `/verify`.
 
 ---
 

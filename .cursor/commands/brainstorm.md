@@ -1,6 +1,12 @@
+---
+description: Structured brainstorming for projects and features. Explores multiple options before implementation.
+---
+
+> **Argumento livre:** A tarefa do usuário será fornecida em texto livre após o comando. Use esse texto como entrada principal deste workflow.
+
 # /brainstorm - Structured Idea Exploration
 
-> **Argumento livre:** A tarefa do usuário será fornecida em texto livre após o comando (ex.: `/orchestrate criar painel admin`). Use esse texto como entrada principal deste workflow.
+(texto livre após o comando)
 
 ---
 

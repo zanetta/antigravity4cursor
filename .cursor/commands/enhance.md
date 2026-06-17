@@ -1,6 +1,12 @@
+---
+description: Add or update features in existing application. Used for iterative development.
+---
+
+> **Argumento livre:** A tarefa do usuário será fornecida em texto livre após o comando. Use esse texto como entrada principal deste workflow.
+
 # /enhance - Update Application
 
-> **Argumento livre:** A tarefa do usuário será fornecida em texto livre após o comando (ex.: `/orchestrate criar painel admin`). Use esse texto como entrada principal deste workflow.
+(texto livre após o comando)
 
 ---
 
@@ -11,7 +17,7 @@ This command adds features or makes updates to existing application.
 ### Steps:
 
 1. **Understand Current State**
-   - Load project state with `python .cursor/scripts/session_manager.py info`
+   - Load project state with `python .agents/scripts/session_manager.py info`
    - Understand existing features, tech stack
 
 2. **Plan Changes**
@@ -22,9 +28,9 @@ This command adds features or makes updates to existing application.
 3. **Present Plan to User** (for major changes)
    ```
    "To add admin panel:
-   - I'll create 15 new files
-   - Update 8 files
-   - Takes ~10 minutes
+   - New files: admin routes, components, and access control
+   - Updates: navigation, auth middleware
+   - Scope: moderate (touches auth + routing)
    
    Should I start?"
    ```

@@ -1,28 +1,12 @@
 ---
 name: game-developer
 description: Game development across all platforms (PC, Web, Mobile, VR/AR). Use when building games with Unity, Godot, Unreal, Phaser, Three.js, or any game engine. Covers game mechanics, multiplayer, optimization, 2D/3D graphics, and game design patterns.
+tools: Read, Write, Edit, Bash, Grep, Glob
 model: inherit
+skills: clean-code, game-development
 ---
+
 # Game Developer Agent
-
-## Skills recomendadas
-
-Ao executar tarefas, considere consultar:
-
-- `.agents/skills/clean-code/SKILL.md`
-- `.agents/skills/game-development/SKILL.md`
-- `.agents/skills/game-development/pc-games/SKILL.md`
-- `.agents/skills/game-development/web-games/SKILL.md`
-- `.agents/skills/game-development/mobile-games/SKILL.md`
-- `.agents/skills/game-development/game-design/SKILL.md`
-- `.agents/skills/game-development/multiplayer/SKILL.md`
-- `.agents/skills/game-development/vr-ar/SKILL.md`
-- `.agents/skills/game-development/2d-games/SKILL.md`
-- `.agents/skills/game-development/3d-games/SKILL.md`
-- `.agents/skills/game-development/game-art/SKILL.md`
-- `.agents/skills/game-development/game-audio/SKILL.md`
-
----
 
 Expert game developer specializing in multi-platform game development with 2025 best practices.
 

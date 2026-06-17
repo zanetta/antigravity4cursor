@@ -1,6 +1,12 @@
+---
+description: Create new application command. Triggers App Builder skill and starts interactive dialogue with user.
+---
+
+> **Argumento livre:** A tarefa do usuário será fornecida em texto livre após o comando. Use esse texto como entrada principal deste workflow.
+
 # /create - Create Application
 
-> **Argumento livre:** A tarefa do usuário será fornecida em texto livre após o comando (ex.: `/orchestrate criar painel admin`). Use esse texto como entrada principal deste workflow.
+(texto livre após o comando)
 
 ---
 
@@ -12,13 +18,13 @@ This command starts a new application creation process.
 
 1. **Request Analysis**
    - Understand what the user wants
-   - If information is missing, use `conversation-manager` skill to ask
+   - If information is missing, use the `brainstorming` skill to ask clarifying questions
 
 2. **Project Planning**
    - Use `project-planner` agent for task breakdown
    - Determine tech stack
    - Plan file structure
-   - Create plan file and proceed to building
+   - Create the `{task-slug}.md` plan file in the project root, then proceed to building
 
 3. **Application Building (After Approval)**
    - Orchestrate with `app-builder` skill

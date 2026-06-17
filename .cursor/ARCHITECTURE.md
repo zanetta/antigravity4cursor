@@ -1,288 +1,279 @@
-# Antigravity Kit Architecture
+# Antigravity Kit for Cursor — Architecture
 
-> Comprehensive AI Agent Capability Expansion Toolkit
+> Port compat-first do [AG Kit](https://github.com/vudovn/ag-kit) para o Cursor IDE — 2026.6.x
 
 ---
 
 ## 📋 Overview
 
-Antigravity Kit is a modular system consisting of:
-
-- **20 Specialist Agents** - Role-based AI personas
-- **36 Skills** - Domain-specific knowledge modules
-- **11 Workflows** - Slash command procedures
+| Componente | Quantidade | Caminho canônico (Cursor) |
+| --- | --- | --- |
+| **Agents** | 20 | `.claude/agents/<name>.md` |
+| **Skills** | 45 | `.agents/skills/<name>/SKILL.md` |
+| **Workflows** | 13 (+1 Cursor) | `.cursor/commands/<name>.md` |
+| **Regras globais** | 1 | `AGENTS.md` |
+| **Regras por domínio** | 7 | `.cursor/rules/*.mdc` |
+| **Memória persistente** | — | `.agents/memory/MEMORY.md` |
+| **Scripts master** | 4 | `.cursor/scripts/` |
+| **MCP** | — | `.cursor/mcp.json` |
+| **Assets compartilhados** | — | `.cursor/shared/` (ex.: `ui-ux-pro-max`) |
 
 ---
 
 ## 🏗️ Directory Structure
 
 ```plaintext
-.cursor/
-├── ARCHITECTURE.md          # This file
-├── agents/                  # 20 Specialist Agents
-├── skills/                  # 36 Skills
-├── workflows/               # 11 Slash Commands
-├── rules/                   # Global Rules
-└── scripts/                 # Master Validation Scripts
+antigravity4cursor/
+├── AGENTS.md                    # Regras sempre-ativas (substitui GEMINI.md)
+├── AGENT_FLOW.md                # Fluxo de agentes (adaptado ao Cursor)
+├── README.md                    # Guia de uso e sync com upstream
+├── .claude/agents/              # 20 personas especialistas
+├── .agents/
+│   ├── skills/                  # 45 skills modulares
+│   └── memory/                  # Memória cross-session (MEMORY.md + tópicos)
+└── .cursor/
+    ├── ARCHITECTURE.md          # Este arquivo
+    ├── commands/                # Slash commands (/plan, /debug, …)
+    ├── rules/                   # Auto-attach por glob (frontend, backend, …)
+    ├── scripts/                 # checklist, verify_all, sync_upstream
+    ├── shared/ui-ux-pro-max/    # Dados e scripts de design
+    └── mcp.json                 # MCP servers (Context7, Playwright, shadcn)
 ```
+
+### Mapeamento vs upstream ag-kit
+
+| Recurso upstream | Neste projeto (Cursor) |
+| --- | --- |
+| `.agents/agent/` | `.claude/agents/` |
+| `.agents/workflows/` | `.cursor/commands/` |
+| `.agents/rules/GEMINI.md` | `AGENTS.md` + `.cursor/rules/*.mdc` |
+| `.agents/scripts/` | `.cursor/scripts/` |
+| `.agents/mcp_config.json` | `.cursor/mcp.json` |
+| `$ARGUMENTS` em workflows | Texto livre após o `/comando` |
 
 ---
 
 ## 🤖 Agents (20)
 
-Specialist AI personas for different domains.
-
-| Agent                    | Focus                      | Skills Used                                              |
-| ------------------------ | -------------------------- | -------------------------------------------------------- |
-| `orchestrator`           | Multi-agent coordination   | parallel-agents, behavioral-modes                        |
-| `project-planner`        | Discovery, task planning   | brainstorming, plan-writing, architecture                |
-| `frontend-specialist`    | Web UI/UX                  | frontend-design, react-best-practices, tailwind-patterns |
-| `backend-specialist`     | API, business logic        | api-patterns, nodejs-best-practices, database-design     |
-| `database-architect`     | Schema, SQL                | database-design, prisma-expert                           |
-| `mobile-developer`       | iOS, Android, RN           | mobile-design                                            |
-| `game-developer`         | Game logic, mechanics      | game-development                                         |
-| `devops-engineer`        | CI/CD, Docker              | deployment-procedures, docker-expert                     |
-| `security-auditor`       | Security compliance        | vulnerability-scanner, red-team-tactics                  |
-| `penetration-tester`     | Offensive security         | red-team-tactics                                         |
-| `test-engineer`          | Testing strategies         | testing-patterns, tdd-workflow, webapp-testing           |
-| `debugger`               | Root cause analysis        | systematic-debugging                                     |
-| `performance-optimizer`  | Speed, Web Vitals          | performance-profiling                                    |
-| `seo-specialist`         | Ranking, visibility        | seo-fundamentals, geo-fundamentals                       |
-| `documentation-writer`   | Manuals, docs              | documentation-templates                                  |
-| `product-manager`        | Requirements, user stories | plan-writing, brainstorming                              |
-| `product-owner`          | Strategy, backlog, MVP     | plan-writing, brainstorming                              |
-| `qa-automation-engineer` | E2E testing, CI pipelines  | webapp-testing, testing-patterns                         |
-| `code-archaeologist`     | Legacy code, refactoring   | clean-code, code-review-checklist                        |
-| `explorer-agent`         | Codebase analysis          | -                                                        |
+| Agent | Foco | Skills principais |
+| --- | --- | --- |
+| `orchestrator` | Coordenação multi-agente | `parallel-agents`, `coordinator-mode`, `memory-system`, `context-compression`, `verify-changes` |
+| `project-planner` | Discovery, planejamento | `brainstorming`, `plan-writing`, `architecture` |
+| `frontend-specialist` | Web UI/UX | `frontend-design`, `nextjs-react-expert`, `tailwind-patterns` |
+| `backend-specialist` | API, lógica de negócio | `api-patterns`, `nodejs-best-practices`, `database-design` |
+| `database-architect` | Schema, SQL | `database-design` |
+| `mobile-developer` | iOS, Android, RN | `mobile-design` |
+| `game-developer` | Mecânicas de jogo | `game-development` |
+| `devops-engineer` | CI/CD, deploy | `deployment-procedures`, `server-management` |
+| `security-auditor` | Compliance, OWASP | `vulnerability-scanner`, `red-team-tactics` |
+| `penetration-tester` | Segurança ofensiva | `red-team-tactics` |
+| `test-engineer` | Estratégias de teste | `testing-patterns`, `tdd-workflow`, `webapp-testing` |
+| `debugger` | Root cause analysis | `systematic-debugging` |
+| `performance-optimizer` | Web Vitals, speed | `performance-profiling` |
+| `seo-specialist` | SEO, visibilidade | `seo-fundamentals`, `geo-fundamentals` |
+| `documentation-writer` | Docs, manuais | `documentation-templates` |
+| `product-manager` | Requisitos, stories | `plan-writing`, `brainstorming` |
+| `product-owner` | Backlog, MVP | `plan-writing`, `brainstorming` |
+| `qa-automation-engineer` | E2E, CI | `webapp-testing`, `testing-patterns` |
+| `code-archaeologist` | Legacy, refactor | `clean-code`, `code-review-checklist` |
+| `explorer-agent` | Análise de codebase | — |
 
 ---
 
-## 🧩 Skills (36)
+## 🧩 Skills (45)
 
-Modular knowledge domains that agents can load on-demand. based on task context.
+Cada skill pode declarar `when_to_use` no frontmatter para carregamento condicional.
 
 ### Frontend & UI
 
-| Skill                   | Description                                                           |
-| ----------------------- | --------------------------------------------------------------------- |
-| `react-best-practices`  | React & Next.js performance optimization (Vercel - 57 rules)          |
-| `web-design-guidelines` | Web UI audit - 100+ rules for accessibility, UX, performance (Vercel) |
-| `tailwind-patterns`     | Tailwind CSS v4 utilities                                             |
-| `frontend-design`       | UI/UX patterns, design systems                                        |
-| `ui-ux-pro-max`         | 50 styles, 21 palettes, 50 fonts                                      |
+| Skill | Descrição |
+| --- | --- |
+| `nextjs-react-expert` | Performance React/Next.js (Vercel, 58 regras) |
+| `web-design-guidelines` | Auditoria UI (100+ regras a11y/UX) |
+| `tailwind-patterns` | Tailwind CSS v4 |
+| `frontend-design` | UI/UX, design systems |
 
 ### Backend & API
 
-| Skill                   | Description                    |
-| ----------------------- | ------------------------------ |
-| `api-patterns`          | REST, GraphQL, tRPC            |
-| `nestjs-expert`         | NestJS modules, DI, decorators |
-| `nodejs-best-practices` | Node.js async, modules         |
-| `python-patterns`       | Python standards, FastAPI      |
+| Skill | Descrição |
+| --- | --- |
+| `api-patterns` | REST, GraphQL, tRPC |
+| `nodejs-best-practices` | Node.js async, módulos |
+| `python-patterns` | Python, FastAPI |
+| `rust-pro` | Rust async, type system |
 
 ### Database
 
-| Skill             | Description                 |
-| ----------------- | --------------------------- |
-| `database-design` | Schema design, optimization |
-| `prisma-expert`   | Prisma ORM, migrations      |
+| Skill | Descrição |
+| --- | --- |
+| `database-design` | Schema, otimização, migrations |
 
-### TypeScript/JavaScript
+### Cloud & Infra
 
-| Skill               | Description                         |
-| ------------------- | ----------------------------------- |
-| `typescript-expert` | Type-level programming, performance |
-
-### Cloud & Infrastructure
-
-| Skill                   | Description               |
-| ----------------------- | ------------------------- |
-| `docker-expert`         | Containerization, Compose |
-| `deployment-procedures` | CI/CD, deploy workflows   |
-| `server-management`     | Infrastructure management |
+| Skill | Descrição |
+| --- | --- |
+| `deployment-procedures` | CI/CD, deploy |
+| `server-management` | Infra, processos |
 
 ### Testing & Quality
 
-| Skill                   | Description              |
-| ----------------------- | ------------------------ |
-| `testing-patterns`      | Jest, Vitest, strategies |
-| `webapp-testing`        | E2E, Playwright          |
-| `tdd-workflow`          | Test-driven development  |
-| `code-review-checklist` | Code review standards    |
-| `lint-and-validate`     | Linting, validation      |
+| Skill | Descrição |
+| --- | --- |
+| `testing-patterns` | Jest, Vitest |
+| `webapp-testing` | E2E, Playwright |
+| `tdd-workflow` | TDD RED-GREEN-REFACTOR |
+| `code-review-checklist` | Padrões de review |
+| `lint-and-validate` | Lint, types |
 
 ### Security
 
-| Skill                   | Description              |
-| ----------------------- | ------------------------ |
-| `vulnerability-scanner` | Security auditing, OWASP |
-| `red-team-tactics`      | Offensive security       |
+| Skill | Descrição |
+| --- | --- |
+| `vulnerability-scanner` | OWASP, secrets |
+| `red-team-tactics` | Táticas ofensivas |
 
 ### Architecture & Planning
 
-| Skill           | Description                |
-| --------------- | -------------------------- |
-| `app-builder`   | Full-stack app scaffolding |
-| `architecture`  | System design patterns     |
-| `plan-writing`  | Task planning, breakdown   |
-| `brainstorming` | Socratic questioning       |
+| Skill | Descrição |
+| --- | --- |
+| `app-builder` | Scaffolding full-stack |
+| `architecture` | System design |
+| `plan-writing` | Breakdown de tarefas |
+| `brainstorming` | Porta socrática |
 
-### Mobile
+### Mobile / Game / SEO / Shell
 
-| Skill           | Description           |
-| --------------- | --------------------- |
-| `mobile-design` | Mobile UI/UX patterns |
+| Grupo | Skills |
+| --- | --- |
+| Mobile | `mobile-design` |
+| Game | `game-development` (+ sub-skills 2D/3D/web/…) |
+| SEO | `seo-fundamentals`, `geo-fundamentals` |
+| Shell | `bash-linux`, `powershell-windows` |
 
-### Game Development
+### Orchestration & Memory (2026.5.13+)
 
-| Skill              | Description           |
-| ------------------ | --------------------- |
-| `game-development` | Game logic, mechanics |
-
-### SEO & Growth
-
-| Skill              | Description                   |
-| ------------------ | ----------------------------- |
-| `seo-fundamentals` | SEO, E-E-A-T, Core Web Vitals |
-| `geo-fundamentals` | GenAI optimization            |
-
-### Shell/CLI
-
-| Skill                | Description               |
-| -------------------- | ------------------------- |
-| `bash-linux`         | Linux commands, scripting |
-| `powershell-windows` | Windows PowerShell        |
+| Skill | Descrição |
+| --- | --- |
+| `coordinator-mode` | Orquestração paralela + síntese |
+| `memory-system` | Memória persistente (`MEMORY.md`) |
+| `context-compression` | Compactação em sessões longas |
+| `verify-changes` | Verificar executando, não só lendo |
+| `batch-operations` | Edições multi-arquivo |
+| `simplify-code` | Reduzir over-engineering |
+| `skillify` | Criar skills de workflows repetitivos |
+| `code-review-graph` | Review via AST + MCP |
 
 ### Other
 
-| Skill                     | Description               |
-| ------------------------- | ------------------------- |
-| `clean-code`              | Coding standards (Global) |
-| `behavioral-modes`        | Agent personas            |
-| `parallel-agents`         | Multi-agent patterns      |
-| `mcp-builder`             | Model Context Protocol    |
-| `documentation-templates` | Doc formats               |
-| `i18n-localization`       | Internationalization      |
-| `performance-profiling`   | Web Vitals, optimization  |
-| `systematic-debugging`    | Troubleshooting           |
+| Skill | Descrição |
+| --- | --- |
+| `clean-code` | Padrões globais (obrigatório) |
+| `behavioral-modes` | Modos operacionais |
+| `parallel-agents` | Padrões multi-agente |
+| `intelligent-routing` | Roteamento (referência; não auto no Cursor) |
+| `mcp-builder` | MCP servers |
+| `documentation-templates` | Formatos de doc |
+| `i18n-localization` | i18n/l10n |
+| `performance-profiling` | Profiling, Lighthouse |
 
 ---
 
-## 🔄 Workflows (11)
+## 🔄 Workflows / Slash Commands
 
-Slash command procedures. Invoke with `/command`.
-
-| Command          | Description              |
-| ---------------- | ------------------------ |
-| `/brainstorm`    | Socratic discovery       |
-| `/create`        | Create new features      |
-| `/debug`         | Debug issues             |
-| `/deploy`        | Deploy application       |
-| `/enhance`       | Improve existing code    |
-| `/orchestrate`   | Multi-agent coordination |
-| `/plan`          | Task breakdown           |
-| `/preview`       | Preview changes          |
-| `/status`        | Check project status     |
-| `/test`          | Run tests                |
-| `/ui-ux-pro-max` | Design with 50 styles    |
+| Comando | Descrição |
+| --- | --- |
+| `/brainstorm` | Exploração socrática antes de codar |
+| `/coordinate` | Coordenação avançada (coordinator-mode) |
+| `/create` | Nova feature ou app |
+| `/debug` | Debug sistemático |
+| `/deploy` | Pré-flight + deploy |
+| `/enhance` | Melhorar código existente |
+| `/orchestrate` | Multi-agente (mín. 3 agents) |
+| `/plan` | Plano estruturado |
+| `/preview` | Servidor de preview local |
+| `/remember` | Salvar em `.agents/memory/` |
+| `/status` | Relatório de progresso |
+| `/test` | Gerar e rodar testes |
+| `/verify` | Provar que funciona (execução) |
+| `/ui-ux-pro-max` | **Cursor-only** — design system (50 estilos) |
 
 ---
 
 ## 🎯 Skill Loading Protocol
 
 ```plaintext
-User Request → Skill Description Match → Load SKILL.md
-                                            ↓
-                                    Read references/
-                                            ↓
-                                    Read scripts/
+User Request → when_to_use match? → Load SKILL.md
+                                        ↓
+                                references/ (se necessário)
+                                        ↓
+                                scripts/ (se necessário)
 ```
 
-### Skill Structure
-
-```plaintext
-skill-name/
-├── SKILL.md           # (Required) Metadata & instructions
-├── scripts/           # (Optional) Python/Bash scripts
-├── references/        # (Optional) Templates, docs
-└── assets/            # (Optional) Images, logos
+```yaml
+---
+name: skill-name
+description: O que a skill faz
+when_to_use: "Quando ativar. NOT for X."
+allowed-tools: Read, Grep, Glob
+---
 ```
-
-### Enhanced Skills (with scripts/references)
-
-| Skill               | Files | Coverage                            |
-| ------------------- | ----- | ----------------------------------- |
-| `ui-ux-pro-max`     | 27    | 50 styles, 21 palettes, 50 fonts    |
-| `app-builder`       | 20    | Full-stack scaffolding              |
 
 ---
 
-## � Scripts (2)
+## 🛠️ Scripts
 
-Master validation scripts that orchestrate skill-level scripts.
-
-### Master Scripts
-
-| Script          | Purpose                                 | When to Use              |
-| --------------- | --------------------------------------- | ------------------------ |
-| `checklist.py`  | Priority-based validation (Core checks) | Development, pre-commit  |
-| `verify_all.py` | Comprehensive verification (All checks) | Pre-deployment, releases |
+| Script | Propósito |
+| --- | --- |
+| `checklist.py` | Validação core (dev, pre-commit) |
+| `verify_all.py` | Suite completa (pre-deploy) |
+| `sync_upstream.py` | Compare/sync com [ag-kit](https://github.com/vudovn/ag-kit) |
+| `session_manager.py` | Gestão de sessão |
+| `auto_preview.py` | Preview automático |
 
 ### Usage
 
 ```bash
-# Quick validation during development
-python .cursor/scripts/checklist.py .
+# Validação rápida
+python3 .cursor/scripts/checklist.py .
 
-# Full verification before deployment
-python .cursor/scripts/verify_all.py . --url http://localhost:3000
+# Verificação completa
+python3 .cursor/scripts/verify_all.py . --url http://localhost:3000
+
+# Sync com upstream
+python3 .cursor/scripts/sync_upstream.py          # dry-run
+python3 .cursor/scripts/sync_upstream.py --apply  # aplicar
 ```
 
-### What They Check
+Skill-level scripts ficam em `.agents/skills/<skill>/scripts/`.
 
-**checklist.py** (Core checks):
-
-- Security (vulnerabilities, secrets)
-- Code Quality (lint, types)
-- Schema Validation
-- Test Suite
-- UX Audit
-- SEO Check
-
-**verify_all.py** (Full suite):
-
-- Everything in checklist.py PLUS:
-- Lighthouse (Core Web Vitals)
-- Playwright E2E
-- Bundle Analysis
-- Mobile Audit
-- i18n Check
-
-For details, see [scripts/README.md](scripts/README.md)
+Detalhes: [scripts/README.md](scripts/README.md)
 
 ---
 
 ## 📊 Statistics
 
-| Metric              | Value                         |
-| ------------------- | ----------------------------- |
-| **Total Agents**    | 20                            |
-| **Total Skills**    | 36                            |
-| **Total Workflows** | 11                            |
-| **Total Scripts**   | 2 (master) + 18 (skill-level) |
-| **Coverage**        | ~90% web/mobile development   |
+| Métrica | Valor |
+| --- | --- |
+| Agents | 20 |
+| Skills | 45 |
+| Workflows upstream | 13 (+1 Cursor) |
+| Scripts master | 4 |
+| Regras por domínio | 7 |
+| Cobertura | ~95% web/mobile + orquestração |
 
 ---
 
 ## 🔗 Quick Reference
 
-| Need     | Agent                 | Skills                                |
-| -------- | --------------------- | ------------------------------------- |
-| Web App  | `frontend-specialist` | react-best-practices, frontend-design |
-| API      | `backend-specialist`  | api-patterns, nodejs-best-practices   |
-| Mobile   | `mobile-developer`    | mobile-design                         |
-| Database | `database-architect`  | database-design, prisma-expert        |
-| Security | `security-auditor`    | vulnerability-scanner                 |
-| Testing  | `test-engineer`       | testing-patterns, webapp-testing      |
-| Debug    | `debugger`            | systematic-debugging                  |
-| Plan     | `project-planner`     | brainstorming, plan-writing           |
+| Necessidade | Agent | Skills |
+| --- | --- | --- |
+| Web App | `frontend-specialist` | `nextjs-react-expert`, `frontend-design` |
+| API | `backend-specialist` | `api-patterns`, `nodejs-best-practices` |
+| Mobile | `mobile-developer` | `mobile-design` |
+| Database | `database-architect` | `database-design` |
+| Security | `security-auditor` | `vulnerability-scanner` |
+| Testing | `test-engineer` | `testing-patterns`, `webapp-testing` |
+| Debug | `debugger` | `systematic-debugging` |
+| Plan | `project-planner` | `brainstorming`, `plan-writing` |
+| Orquestração | `orchestrator` | `coordinator-mode`, `parallel-agents` |
+| Memória | — | `memory-system` + `/remember` |

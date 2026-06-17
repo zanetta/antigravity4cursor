@@ -1,6 +1,12 @@
+---
+description: Display agent and project status. Progress tracking and status board.
+---
+
+> **Argumento livre:** A tarefa do usuário será fornecida em texto livre após o comando. Use esse texto como entrada principal deste workflow.
+
 # /status - Show Status
 
-> **Argumento livre:** A tarefa do usuário será fornecida em texto livre após o comando (ex.: `/orchestrate criar painel admin`). Use esse texto como entrada principal deste workflow.
+(texto livre após o comando)
 
 ---
 
@@ -78,5 +84,5 @@ Show current project and agent status.
 ## Technical
 
 Status uses these scripts:
-- `python .cursor/scripts/session_manager.py status`
-- `python .cursor/scripts/auto_preview.py status`
+- `python .agents/scripts/session_manager.py status`
+- `python .agents/scripts/auto_preview.py status`

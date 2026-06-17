@@ -1,6 +1,12 @@
+---
+description: Test generation and test running command. Creates and executes tests for code.
+---
+
+> **Argumento livre:** A tarefa do usuário será fornecida em texto livre após o comando. Use esse texto como entrada principal deste workflow.
+
 # /test - Test Generation and Execution
 
-> **Argumento livre:** A tarefa do usuário será fornecida em texto livre após o comando (ex.: `/orchestrate criar painel admin`). Use esse texto como entrada principal deste workflow.
+(texto livre após o comando)
 
 ---
 

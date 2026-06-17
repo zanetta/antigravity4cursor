@@ -1,9 +1,15 @@
+---
+description: Coordinate multiple agents for complex tasks. Use for multi-perspective analysis, comprehensive reviews, or tasks requiring different domain expertise.
+---
+
+> **Argumento livre:** A tarefa do usuário será fornecida em texto livre após o comando. Use esse texto como entrada principal deste workflow.
+
 # Multi-Agent Orchestration
 
 You are now in **ORCHESTRATION MODE**. Your task: coordinate specialized agents to solve this complex problem.
 
 ## Task to Orchestrate
-> **Argumento livre:** A tarefa do usuário será fornecida em texto livre após o comando (ex.: `/orchestrate criar painel admin`). Use esse texto como entrada principal deste workflow.
+(texto livre após o comando)
 
 ---
 
@@ -49,7 +55,7 @@ You are now in **ORCHESTRATION MODE**. Your task: coordinate specialized agents 
 
 | Step | Agent | Action |
 |------|-------|--------|
-| 1 | `project-planner` | Create docs/PLAN.md |
+| 1 | `project-planner` | Create {task-slug}.md in project root |
 | 2 | (optional) `explorer-agent` | Codebase discovery if needed |
 
 > 🔴 **NO OTHER AGENTS during planning!** Only project-planner and explorer-agent.
@@ -57,9 +63,9 @@ You are now in **ORCHESTRATION MODE**. Your task: coordinate specialized agents 
 ### ⏸️ CHECKPOINT: User Approval
 
 ```
-After PLAN.md is complete, ASK:
+After {task-slug}.md is complete, ASK:
 
-"✅ Plan created: docs/PLAN.md
+"✅ Plan created: {task-slug}.md
 
 Do you approve? (Y/N)
 - Y: Start implementation
@@ -78,11 +84,11 @@ Do you approve? (Y/N)
 
 > ✅ After user approval, invoke multiple agents in PARALLEL.
 
-## Available Agents (17 total)
+## Available Agents (20 total)
 
 | Agent | Domain | Use When |
 |-------|--------|----------|
-| `project-planner` | Planning | Task breakdown, PLAN.md |
+| `project-planner` | Planning | Task breakdown, {task-slug}.md |
 | `explorer-agent` | Discovery | Codebase mapping |
 | `frontend-specialist` | UI/UX | React, Vue, CSS, HTML |
 | `backend-specialist` | Server | API, Node.js, Python |
@@ -90,6 +96,7 @@ Do you approve? (Y/N)
 | `security-auditor` | Security | Vulnerabilities, Auth |
 | `penetration-tester` | Security | Active testing |
 | `test-engineer` | Testing | Unit, E2E, Coverage |
+| `qa-automation-engineer` | QA | E2E pipelines, test automation |
 | `devops-engineer` | Ops | CI/CD, Docker, Deploy |
 | `mobile-developer` | Mobile | React Native, Flutter |
 | `performance-optimizer` | Speed | Lighthouse, Profiling |
@@ -97,6 +104,9 @@ Do you approve? (Y/N)
 | `documentation-writer` | Docs | README, API docs |
 | `debugger` | Debug | Error analysis |
 | `game-developer` | Games | Unity, Godot |
+| `code-archaeologist` | Legacy | Refactoring, legacy code |
+| `product-manager` | Product | Requirements, user stories |
+| `product-owner` | Product | Backlog, MVP, strategy |
 | `orchestrator` | Meta | Coordination |
 
 ---
@@ -122,14 +132,14 @@ Identify ALL domains this task touches:
 
 | If Plan Exists | Action |
 |----------------|--------|
-| NO `docs/PLAN.md` | → Go to PHASE 1 (planning only) |
-| YES `docs/PLAN.md` + user approved | → Go to PHASE 2 (implementation) |
+| NO `{task-slug}.md` | → Go to PHASE 1 (planning only) |
+| YES `{task-slug}.md` + user approved | → Go to PHASE 2 (implementation) |
 
 ### Step 3: Execute Based on Phase
 
 **PHASE 1 (Planning):**
 ```
-Use the project-planner agent to create PLAN.md
+Use the project-planner agent to create {task-slug}.md
 → STOP after plan is created
 → ASK user for approval
 ```
@@ -153,7 +163,7 @@ When invoking ANY subagent, you MUST include:
 
 **Example with FULL context:**
 ```
-Use the project-planner agent to create PLAN.md:
+Use the project-planner agent to create {task-slug}.md:
 
 **CONTEXT:**
 - User Request: "A social platform for students, using mock data"
@@ -161,7 +171,7 @@ Use the project-planner agent to create PLAN.md:
 - Previous Work: Orchestrator asked 6 questions, user chose all options
 - Current Plan: playful-roaming-dream.md exists in workspace with initial structure
 
-**TASK:** Create detailed PLAN.md based on ABOVE decisions. Do NOT infer from folder name.
+**TASK:** Create detailed {task-slug}.md based on ABOVE decisions. Do NOT infer from folder name.
 ```
 
 > ⚠️ **VIOLATION:** Invoking subagent without full context = subagent will make wrong assumptions!
@@ -188,7 +198,7 @@ Combine all agent outputs into unified report.
 [Original task summary]
 
 ### Mode
-[Current Antigravity Agent mode: plan/edit/ask]
+[Current AG Kit Agent mode: plan/edit/ask]
 
 ### Agents Invoked (MINIMUM 3)
 | # | Agent | Focus Area | Status |
@@ -207,7 +217,7 @@ Combine all agent outputs into unified report.
 3. **[Agent 3]**: Finding
 
 ### Deliverables
-- [ ] PLAN.md created
+- [ ] {task-slug}.md created
 - [ ] Code implemented
 - [ ] Tests passing
 - [ ] Scripts verified

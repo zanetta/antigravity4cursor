@@ -1,6 +1,12 @@
+---
+description: Preview server start, stop, and status check. Local development server management.
+---
+
+> **Argumento livre:** A tarefa do usuário será fornecida em texto livre após o comando. Use esse texto como entrada principal deste workflow.
+
 # /preview - Preview Management
 
-> **Argumento livre:** A tarefa do usuário será fornecida em texto livre após o comando (ex.: `/orchestrate criar painel admin`). Use esse texto como entrada principal deste workflow.
+(texto livre após o comando)
 
 ---
 
@@ -70,8 +76,8 @@ Which one? (default: 1)
 Auto preview uses `auto_preview.py` script:
 
 ```bash
-python .cursor/scripts/auto_preview.py start [port]
-python .cursor/scripts/auto_preview.py stop
-python .cursor/scripts/auto_preview.py status
+python .agents/scripts/auto_preview.py start [port]
+python .agents/scripts/auto_preview.py stop
+python .agents/scripts/auto_preview.py status
 ```
 

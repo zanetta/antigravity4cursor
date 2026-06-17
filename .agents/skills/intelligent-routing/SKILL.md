@@ -1,6 +1,7 @@
 ---
 name: intelligent-routing
 description: Automatic agent selection and intelligent task routing. Analyzes user requests and automatically selects the best specialist agent(s) without requiring explicit user mentions.
+when_to_use: "Always active. Automatically selects the best specialist agent for each user request without explicit user mentions."
 version: 1.0.0
 ---
 
@@ -233,11 +234,12 @@ User: "Add mobile support to the web app"
 - If task is unclear, still ask questions first
 - Then route to appropriate agent
 
-### With GEMINI.md Rules
+### With AGENTS.md Rules (Cursor)
 
-- **Priority**: GEMINI.md rules > intelligent-routing
-- If GEMINI.md specifies explicit routing, follow it
-- Intelligent routing is the DEFAULT when no explicit rule exists
+- **Priority**: `AGENTS.md` + `.cursor/rules/*.mdc` > intelligent-routing
+- If `AGENTS.md` or a domain rule specifies explicit routing, follow it
+- Intelligent routing is the **default reference** when no explicit rule exists
+- **Cursor note**: Auto-routing is not enforced by the IDE — the agent should apply this skill proactively when reading user requests
 
 ## Testing the System
 
@@ -305,7 +307,7 @@ still mention agents explicitly with `@agent-name` if you prefer.
 
 ### Enable Debug Mode (for development)
 
-Add to GEMINI.md temporarily:
+Add to `AGENTS.md` temporarily (or a project rule in `.cursor/rules/`):
 
 ```markdown
 ## DEBUG: Intelligent Routing
@@ -332,4 +334,4 @@ Show selection reasoning:
 
 ---
 
-**Next Steps**: Integrate this skill into GEMINI.md TIER 0 rules.
+**Next Steps**: Reference this skill from `AGENTS.md` and domain rules in `.cursor/rules/*.mdc` for routing hints.
